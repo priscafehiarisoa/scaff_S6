@@ -11,4 +11,16 @@ public class AnnotationProperty {
     String entity;
     String controller;
     Constraint constraints;
+
+    @Override
+    public String toString() {
+        return "AnnotationProperty{" +
+                "table='" + table + '\'' +
+                ", autoIncrement='" + autoIncrement + '\'' +
+                ", column='" + column + '\'' +
+                ", entity='" + entity + '\'' +
+                ", controller='" + controller + '\'' +
+                ", constraints=" + constraints +
+                '}';
+    }
 }

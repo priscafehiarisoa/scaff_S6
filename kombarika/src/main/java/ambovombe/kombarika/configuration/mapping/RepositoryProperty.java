@@ -8,4 +8,13 @@ public class RepositoryProperty {
     String name;
     String classSyntax;
     String fieldSyntax;
+
+    @Override
+    public String toString() {
+        return "RepositoryProperty{" +
+                "name='" + name + '\'' +
+                ", classSyntax='" + classSyntax + '\'' +
+                ", fieldSyntax='" + fieldSyntax + '\'' +
+                '}';
+    }
 }

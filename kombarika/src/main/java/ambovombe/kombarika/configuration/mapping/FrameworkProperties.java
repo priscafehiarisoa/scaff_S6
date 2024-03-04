@@ -41,4 +41,19 @@ public class FrameworkProperties {
         }
         return this.template;
     }
+
+    @Override
+    public String toString() {
+        return " \n FrameworkProperties{" +
+                " \n template='" + template + '\'' +
+                " \n , repository='" + repository + '\'' +
+                " \n , isOneRepository=" + isOneRepository +
+                " \n , imports=" + imports +
+                " \n , annotationProperty=" + annotationProperty +
+                " \n , crudMethod=" + crudMethod +
+                " \n , controllerProperty=" + controllerProperty +
+                " \n , repositoryProperty=" + repositoryProperty +
+                " \n , init=" + init +
+                '}';
+    }
 }

@@ -10,4 +10,15 @@ public class CrudMethod {
     String delete;
     String update;
     String save;
+
+    @Override
+    public String toString() {
+        return "CrudMethod{" +
+                "findAll='" + findAll + '\'' +
+                ", findById='" + findById + '\'' +
+                ", delete='" + delete + '\'' +
+                ", update='" + update + '\'' +
+                ", save='" + save + '\'' +
+                '}';
+    }
 }

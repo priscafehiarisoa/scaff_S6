@@ -24,9 +24,8 @@
                         "controller":[
                             "System.Diagnostics",
                             "Microsoft.AspNetCore.Mvc",
-                            "packageName.classNameContext",
-                            "entity",
-                            ""
+                            "packageName",
+                            "entity"
                         ],
                         "entity":[
                             "System.ComponentModel.DataAnnotations",
@@ -69,12 +68,12 @@
                         "delete": "HttpDelete",
                         "classSyntax": "?Controller : Controller",
                         "returnType": "ActionResult<?>",
-                        "field": "private readonly ?DbContext _context;\n\tprivate readonly ILogger<?Controller> _logger;",
+                        "field": "private readonly RepositoryDbContext _context;\n\tprivate readonly ILogger<?Controller> _logger;",
                         "annotationField": "",
                         "annotationMethodParameter":"",
                         "annotationArgumentParameterFormData":"FromBody",
                         "annotationArgumentParameterLink":"",
-                        "constructor": "\tpublic #name#Controller(#name#DbContext context) { _context = context; }"
+                        "constructor": "\tpublic #name#Controller(RepositoryDbContext context) { _context = context; }"
                     },
                     "repositoryProperty" : {
                         "name":"DbContext",
@@ -173,7 +172,7 @@
                     "isOneRepository":"false",
                     "imports" : {
                         "controller":[
-    
+
                         ],
                         "entity":[
                             "com.dao.annotation.*",

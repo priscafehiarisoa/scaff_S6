@@ -13,7 +13,7 @@ import lombok.Setter;
 @Getter @Setter
 public class Entity {
     LanguageProperties languageProperties;
-    AnnotationProperty annotationProperty; 
+    AnnotationProperty annotationProperty;
     TypeMapping typeMapping;
     Imports imports;
 
@@ -33,10 +33,12 @@ public class Entity {
                 + this.getLanguageProperties().getConstructorSyntax().replace("?", ObjectUtility.capitalize(ObjectUtility.formatToCamelCase(table)));
         return res;
     }
-    
+
     public Set<String> getAllImports(HashMap<String, String> columns) {
         Set<String> lst = new HashSet<>();
+        System.out.println("bobobobobobbo"+ columns.size());
         for (Map.Entry<String, String> set : columns.entrySet()) {
+            System.out.println("package name:"+ this.getTypeMapping().getListMapping().get(set.getValue()).getPackageName());
             if(this.getTypeMapping().getListMapping().get(set.getValue()).getPackageName().equals("")) { continue; }
             lst.add(this.getTypeMapping().getListMapping().get(set.getValue()).getPackageName()+
                     "" + this.getLanguageProperties().getEndOfInstruction()+
@@ -62,7 +64,7 @@ public class Entity {
             res += imp+ " " + item + "" + this.getLanguageProperties().getEndOfInstruction() + "\n";
         }
         res += "\n";
-        res += getImports(columns);        
+        res += getImports(columns);
         return res;
     }
 
@@ -76,7 +78,7 @@ public class Entity {
                 if(set.getValue().equals("Integer") && !this.getAnnotationProperty().getAutoIncrement().equals("")){
                     res += "\t"
                         + this.getLanguageProperties().getAnnotationSyntax().replace("?", this.getAnnotationProperty().getAutoIncrement()) + "\n";
-                    
+
                 }
             }
             String temp = foreignKeys.get(set.getKey());
@@ -98,7 +100,7 @@ public class Entity {
             res += "\t"
                     + this.getLanguageProperties().getAnnotationSyntax().replace("?", this.getAnnotationProperty().getColumn()).replace("?", set.getKey()) + "\n";
 
-            res += "\t"
+            res += "\t public "
                 + this.getLanguageProperties().getFieldSyntax()
                     .replace("Type", typeMapping.getListMapping().get(set.getValue()).getType())
                     .replace("field", ObjectUtility.formatToCamelCase(set.getKey()))

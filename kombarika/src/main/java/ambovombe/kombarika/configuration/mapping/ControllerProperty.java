@@ -18,4 +18,23 @@ public class ControllerProperty {
     String annotationArgumentParameterFormData;
     String annotationArgumentParameterLink;
     String constructor;
+
+    @Override
+    public String toString() {
+        return "ControllerProperty{" +
+                "path='" + path + '\'' +
+                ", get='" + get + '\'' +
+                ", post='" + post + '\'' +
+                ", put='" + put + '\'' +
+                ", delete='" + delete + '\'' +
+                ", classSyntax='" + classSyntax + '\'' +
+                ", field='" + field + '\'' +
+                ", returnType='" + returnType + '\'' +
+                ", annotationField='" + annotationField + '\'' +
+                ", annotationMethodParameter='" + annotationMethodParameter + '\'' +
+                ", annotationArgumentParameterFormData='" + annotationArgumentParameterFormData + '\'' +
+                ", annotationArgumentParameterLink='" + annotationArgumentParameterLink + '\'' +
+                ", constructor='" + constructor + '\'' +
+                '}';
+    }
 }

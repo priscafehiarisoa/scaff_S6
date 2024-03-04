@@ -36,4 +36,24 @@ public class LanguageProperties {
     //CONSTRUCTOR
     public LanguageProperties(){}
 
+    @Override
+    public String toString() {
+        return "LanguageProperties{" +
+                "name='" + name + '\'' +
+                ", importSyntax='" + importSyntax + '\'' +
+                ", packageSyntax='" + packageSyntax + '\'' +
+                ", openBracket='" + openBracket + '\'' +
+                ", closeBracket='" + closeBracket + '\'' +
+                ", annotationSyntax='" + annotationSyntax + '\'' +
+                ", encapsulation='" + encapsulation + '\'' +
+                ", extension='" + extension + '\'' +
+                ", classSyntax='" + classSyntax + '\'' +
+                ", fieldSyntax='" + fieldSyntax + '\'' +
+                ", methodSyntax='" + methodSyntax + '\'' +
+                ", endOfInstruction='" + endOfInstruction + '\'' +
+                ", constructorSyntax='" + constructorSyntax + '\'' +
+                ", listSyntax='" + listSyntax + '\'' +
+                ", frameworks=" + frameworks +
+                '}';
+    }
 }

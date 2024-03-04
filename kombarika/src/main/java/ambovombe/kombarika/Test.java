@@ -7,6 +7,7 @@ package ambovombe.kombarika;
 import ambovombe.kombarika.generator.CodeGenerator;
 import ambovombe.kombarika.generator.service.DbService;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 /**
  *
@@ -18,10 +19,10 @@ public class Test {
      * @param args the command line arguments
      * @throws SQLException
      */
-     
+
     public static void main(String[] args) throws Exception {
         CodeGenerator codeGenerator = new CodeGenerator();
-        String path = "./";
+        String path = "/Users/priscafehiarisoadama/RiderProjects/WebApplication5/WebApplication5/";
         String framework = "csharp:dotnet";
         String packageName = "com.district.test";
         String entity = "entity";
@@ -49,6 +50,6 @@ public class Test {
             e.printStackTrace();
         }finally{
             codeGenerator.getDbConnection().close();
-        }    
+        }
     }
 }

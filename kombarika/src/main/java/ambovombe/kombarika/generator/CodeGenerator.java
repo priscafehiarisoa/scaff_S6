@@ -10,6 +10,7 @@ import ambovombe.kombarika.configuration.main.ViewDetails;
 import ambovombe.kombarika.configuration.mapping.*;
 import ambovombe.kombarika.database.DbConnection;
 import ambovombe.kombarika.generator.parser.FileUtility;
+import ambovombe.kombarika.generator.parser.JsonUtility;
 import ambovombe.kombarika.generator.service.DbService;
 import ambovombe.kombarika.generator.service.GeneratorService;
 import ambovombe.kombarika.generator.service.controller.Controller;
@@ -21,6 +22,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.*;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -48,9 +50,9 @@ public class CodeGenerator {
     }
 
     public void generateEntity(
-        String path, 
-        String table, 
-        String packageName, 
+        String path,
+        String table,
+        String packageName,
         String lang)
     throws Exception{
         String[] splittedLang = lang.split(":");
@@ -60,11 +62,11 @@ public class CodeGenerator {
     }
 
     public void generateController(
-        String path, 
-        String table, 
-        String packageName, 
-        String repository, 
-        String entity, 
+        String path,
+        String table,
+        String packageName,
+        String repository,
+        String entity,
         String lang
     ) throws Exception{
         String[] splittedLang = lang.split(":");
@@ -90,10 +92,10 @@ public class CodeGenerator {
     }
 
     public String buildRepository(
-        String table, 
-        String packageName, 
-        String entityPackage, 
-        String language, 
+        String table,
+        String packageName,
+        String entityPackage,
+        String language,
         String framework
     ) throws Exception{
         LanguageProperties languageProperties = getLanguageDetails().getLanguages().get(language);
@@ -108,11 +110,11 @@ public class CodeGenerator {
     }
 
     public String buildRepository(
-        String[] tables, 
+        String[] tables,
         String context,
-        String packageName, 
-        String entityPackage, 
-        String language, 
+        String packageName,
+        String entityPackage,
+        String language,
         String framework
     ) throws Exception{
         LanguageProperties languageProperties = getLanguageDetails().getLanguages().get(language);
@@ -125,13 +127,13 @@ public class CodeGenerator {
         repository.setTypeMapping(typeMapping);
         return repository.generateRepository(tables, context, packageName, entityPackage, primaryKeysType);
     }
-    
+
 
     public void generateRepository(
-        String path, 
-        String table, 
-        String packageName, 
-        String entityPackage, 
+        String path,
+        String table,
+        String packageName,
+        String entityPackage,
         String lang
     ) throws Exception{
         String[] splittedLang = lang.split(":");
@@ -142,11 +144,11 @@ public class CodeGenerator {
     }
 
     public void generateRepository(
-        String path, 
-        String[] tables, 
+        String path,
+        String[] tables,
         String context,
-        String packageName, 
-        String entityPackage, 
+        String packageName,
+        String entityPackage,
         String lang
     ) throws Exception{
         String[] splittedLang = lang.split(":");
@@ -156,9 +158,9 @@ public class CodeGenerator {
     }
 
     public void generateView(
-        String path, 
+        String path,
         String table,
-        String directory, 
+        String directory,
         String viewType,
         String url
     ) throws Exception{
@@ -187,10 +189,10 @@ public class CodeGenerator {
     }
 
     public void generateEntityFile(
-        String path, 
-        String table, 
-        String packageName, 
-        String language, 
+        String path,
+        String table,
+        String packageName,
+        String language,
         String framework
     ) throws Exception{
         String entity = buildEntity(table, packageName, language, framework);
@@ -234,12 +236,12 @@ public class CodeGenerator {
         view.setViewProperties(this.getViewDetails().getViews().get(viewType));
         return view.generateView(table, url, dbConnection);
     }
-    
+
     public void generateAllEntity(
-        String path, 
-        String[] tables, 
-        String packageName, 
-        String entity, 
+        String path,
+        String[] tables,
+        String packageName,
+        String entity,
         String framework
     )  throws Exception{
         for (String table : tables) {
@@ -247,23 +249,23 @@ public class CodeGenerator {
         }
     }
     public void generateAllController(
-        String path, 
+        String path,
         String[] tables,
-        String packageName, 
-        String entity, 
-        String controller, 
+        String packageName,
+        String entity,
+        String controller,
         String repository,
         String framework
     )  throws Exception{
         for (String table : tables) {
-            generateController(path, table, packageName + "." + controller, packageName + "." + repository, packageName + "." + "entity", framework);  
+            generateController(path, table, packageName + "." + controller, packageName + "." + repository, packageName + "." + "entity", framework);
         }
     }
-    
+
     public void generateAllRepository(
-        String path, 
+        String path,
         String[] tables,
-        String packageName, 
+        String packageName,
         String entity,
         String repository,
         String framework
@@ -278,32 +280,32 @@ public class CodeGenerator {
     }
 
     public void generateAllView(
-        String path, 
+        String path,
         String[] tables,
         String view,
         String viewType,
         String url
     )  throws Exception{
         for (String table : tables) {
-            generateView(path, table, view, viewType, url); 
+            generateView(path, table, view, viewType, url);
         }
     }
 
     public void generateAll(
-        String path, 
-        String packageName, 
-        String entity, 
-        String controller, 
+        String path,
+        String packageName,
+        String entity,
+        String controller,
         String repository,
         String view,
         String viewType,
         String url,
-        String[] tables, 
+        String[] tables,
         String framework
     ) throws Exception{
         generateAllEntity(path, tables, packageName ,entity, framework);
         generateAllRepository(path, tables, packageName , entity, repository, framework);
-        generateAllController(path, tables, packageName, entity, controller, repository, framework);  
-        generateAllView(path, tables, view, viewType, url);    
+        generateAllController(path, tables, packageName, entity, controller, repository, framework);
+        generateAllView(path, tables, view, viewType, url);
     }
 }

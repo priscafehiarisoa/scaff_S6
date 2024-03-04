@@ -8,4 +8,12 @@ public class Constraint {
     String primaryKey;
     @Getter @Setter
     ForeignKey foreignKey;
+
+    @Override
+    public String toString() {
+        return "Constraint{" +
+                "primaryKey='" + primaryKey + '\'' +
+                ", foreignKey=" + foreignKey +
+                '}';
+    }
 }

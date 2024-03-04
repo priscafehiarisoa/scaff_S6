@@ -54,11 +54,30 @@ public class Repository {
                 .replace("#open-bracket#", languageProperties.getOpenBracket())
                 .replace("#close-bracket#", languageProperties.getCloseBracket())
                 .replace("#fields#", this.getFrameworkProperties().getRepositoryProperty().getFieldSyntax().replace("#Field#", ObjectUtility.capitalize(ObjectUtility.formatToCamelCase(table))))
-                .replace("#constructors#", "")
+                .replace("#constructors#", generateConstructor(getRepositoryClass(table, primaryKeysType)))
                 .replace("#methods#", "")
                 .replace("#encapsulation#", "");
+        System.out.println("see frame ="+this.getFrameworkProperties());
         return res;
     }
+
+    // added by me
+    public String generatemethodsForRepository(String table,String classe){
+        return " protected override void OnModelCreating(ModelBuilder modelBuilder)\n" +
+                "        {\n" +
+                "            modelBuilder.Entity<"+classe+">().ToTable(\""+table+"\"); // Optionally, specify table name\n" +
+                "        }";
+    }
+    public String generateConstructor(String classe){
+        classe=classe.replace("public class","");
+        classe=classe.replace(": ","");
+        classe=classe.replace(" DbContext","");
+        System.out.println("ememememem : "+classe);
+        return "public "+classe+" (DbContextOptions<RepositoryDbContext> options) : base(options)\n" +
+                "        {\n" +
+                "        }";
+    }
+
 
     public String generateRepository(
         String[] tables,
@@ -83,7 +102,7 @@ public class Repository {
                 .replace("#open-bracket#", languageProperties.getOpenBracket())
                 .replace("#close-bracket#", languageProperties.getCloseBracket())
                 .replace("#fields#", field)
-                .replace("#constructors#", "")
+                .replace("#constructors#", generateConstructor(getRepositoryClass(context, primaryKeysType)))
                 .replace("#methods#", "")
                 .replace("#encapsulation#", "");
         return res;
