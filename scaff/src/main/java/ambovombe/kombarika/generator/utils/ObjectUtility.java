@@ -13,10 +13,7 @@ import java.util.Collection;
 import java.util.List;
 
 
-/**
- *
- * @author Mamisoa
- */
+
 public class ObjectUtility {
     public static String capitalize(String text){
         return text.substring(0,1).toUpperCase().concat(text.substring(1));
@@ -38,7 +35,7 @@ public class ObjectUtility {
         int i = 0;
         for (Integer index : lst) {
             res += capitalize(temp.substring(i, index)) + " ";
-            i = index; 
+            i = index;
         }
         res += temp.substring(i, temp.length());
         return capitalize(res);

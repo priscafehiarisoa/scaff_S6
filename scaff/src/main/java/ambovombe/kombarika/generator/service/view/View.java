@@ -40,7 +40,7 @@ public class View {
                 res += template
                 .replace("#label#", ObjectUtility.formatToSpacedString(set.getKey()))
                 .replace("#type#", this.getViewProperties().getListMapping().get(set.getValue().split("\\.")[set.getValue().split("\\.").length -1]))
-                .replace("#name#", ObjectUtility.formatToCamelCase(set.getKey())) + "\n";        
+                .replace("#name#", ObjectUtility.formatToCamelCase(set.getKey())) + "\n";
             }
         }
         return Misc.tabulate(res);
@@ -57,7 +57,7 @@ public class View {
                 .replace("#path#", ObjectUtility.formatToCamelCase(set.getValue()))
                 .replace("#Name#", ObjectUtility.capitalize(ObjectUtility.formatToCamelCase(set.getValue())))
                 .replace("#label#", ObjectUtility.formatToCamelCase(set.getValue()))
-                .replace("#id#", ObjectUtility.formatToCamelCase(id))                
+                .replace("#id#", ObjectUtility.formatToCamelCase(id))
                 .replace("#attribute#", ObjectUtility.formatToCamelCase(attribute))
                 ;
             res += "\n";
@@ -82,13 +82,13 @@ public class View {
                 .replace("#label#", ObjectUtility.formatToSpacedString(set.getKey()))
                 .replace("#type#", this.getViewProperties().getListMapping().get(set.getValue().split("\\.")[set.getValue().split("\\.").length -1]))
                 .replace("#Name#", ObjectUtility.capitalize(ObjectUtility.formatToCamelCase(set.getKey())))
-                .replace("#name#", ObjectUtility.formatToCamelCase(set.getKey())) + "\n";        
+                .replace("#name#", ObjectUtility.formatToCamelCase(set.getKey())) + "\n";
             }else{
                 res += template
                 .replace("#label#", "")
-                .replace("#type#", "hidden")                
+                .replace("#type#", "hidden")
                 .replace("#Name#", ObjectUtility.capitalize(ObjectUtility.formatToCamelCase(set.getKey())))
-                .replace("#name#", ObjectUtility.formatToCamelCase(set.getKey())) + "\n";          
+                .replace("#name#", ObjectUtility.formatToCamelCase(set.getKey())) + "\n";
             }
         }
         return Misc.tabulate(res);
@@ -110,7 +110,7 @@ public class View {
         for (Map.Entry<String, String> set : columns.entrySet()) {
             if(foreignKeys.get(set.getKey()) != null){
                 res += "\t\t" + template
-                .replace("#values#", ObjectUtility.formatToCamelCase(foreignKeys.get(set.getKey())) + "." + ObjectUtility.formatToCamelCase(attribute)) + "\n";                
+                .replace("#values#", ObjectUtility.formatToCamelCase(foreignKeys.get(set.getKey())) + "." + ObjectUtility.formatToCamelCase(attribute)) + "\n";
             }else{
                 res += "\t\t" + template
                 .replace("#values#", ObjectUtility.formatToCamelCase(set.getKey())) + "\n";
@@ -130,10 +130,10 @@ public class View {
                 .replace("#name#", ObjectUtility.formatToCamelCase(temp)) + "\n";
                 continue;
             }
-            res +=  template                    
+            res +=  template
             .replace("#Name#", ObjectUtility.capitalize(ObjectUtility.formatToCamelCase(set.getKey())))
-            .replace("#name#", ObjectUtility.formatToCamelCase(set.getKey())) + "\n"; 
-        }       
+            .replace("#name#", ObjectUtility.formatToCamelCase(set.getKey())) + "\n";
+        }
         return Misc.tabulate(res);
     }
 
@@ -195,9 +195,12 @@ public class View {
     }
 
     public String generateView(String table, String url, DbConnection dbConnection) throws Exception{
-        String res = "";        
+        String res = "";
+//        chemin misy ny template an'le fichier ho-générer-na
         String tempPath = Misc.getViewTemplateLocation().concat(File.separator).concat(this.getViewProperties().getTemplate());
         String template = FileUtility.readOneFile(tempPath);
+        System.out.println("template path : "+tempPath);
+//        System.out.println("view template : "+template);
         List<String> primaryKeys = DbService.getPrimaryKey(dbConnection, table);
         String path =  ObjectUtility.formatToCamelCase(table);
         HashMap<String, String> columns = DbService.getDetailsColumn(dbConnection.getConnection(), table);

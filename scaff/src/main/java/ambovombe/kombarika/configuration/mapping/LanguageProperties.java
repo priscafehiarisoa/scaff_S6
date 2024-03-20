@@ -10,10 +10,7 @@ import lombok.Setter;
 
 import java.util.HashMap;
 
-/**
- *
- * @author Mamisoa
- */
+
 @Setter @Getter
 public class LanguageProperties {
     //GETTERS & SETTERS

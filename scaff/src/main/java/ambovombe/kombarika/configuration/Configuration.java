@@ -8,9 +8,7 @@ import lombok.Setter;
 import java.io.File;
 
 
-/**
- * @author rakharrs
- */
+
 public abstract class Configuration {
     @Getter @Setter
     String jsonPath;

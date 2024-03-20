@@ -7,9 +7,6 @@ import lombok.Setter;
 
 import java.util.HashMap;
 
-/**
- * @author rakharrs
- */
 @Getter @Setter
 public class FrameworkDetails extends Configuration {
     HashMap<String, FrameworkProperties> frameworks;

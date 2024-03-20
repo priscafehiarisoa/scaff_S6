@@ -7,9 +7,7 @@ import ambovombe.kombarika.configuration.mapping.ViewProperties;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * @author Mamisoa
- */
+
 @Getter @Setter
 public class ViewDetails extends Configuration{
     HashMap<String, ViewProperties> views;

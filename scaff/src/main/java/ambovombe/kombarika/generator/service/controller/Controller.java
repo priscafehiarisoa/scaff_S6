@@ -52,11 +52,15 @@ public class Controller{
             .replace("#object#", ObjectUtility.formatToCamelCase(table))
             .replace("?", ObjectUtility.capitalize(ObjectUtility.formatToCamelCase(table))));
         System.out.println("--upd--"+this.getCrudMethod().getUpdate());
+        System.out.println("**==**==");
+        System.out.println(args);
+        String arg=args.split(" ")[2];
+        String state="\n_context."+args.split(" ")[1]+".Update("+arg+"); \n";
         String function =  this.getLanguageProperties().getMethodSyntax()
                 .replace("#name#", "update")
-                .replace("#type#", this.getControllerProperty().getReturnType().replace("?", ObjectUtility.capitalize(ObjectUtility.formatToCamelCase(table))))
+                .replace("#type#", "async Task<"+ this.getControllerProperty().getReturnType().replace("?", ObjectUtility.capitalize(ObjectUtility.formatToCamelCase(table)))+">")
                 .replace("#arg#", args)
-                .replace("#body#", body);
+                .replace("#body#", state+ body);
         System.out.println("=func upd="+function);
 
         return Misc.tabulate(this.getLanguageProperties().getAnnotationSyntax().replace("?", this.getControllerProperty().getPut()) + "\n" + function);
@@ -139,6 +143,8 @@ public class Controller{
                 + ObjectUtility.capitalize(ObjectUtility.formatToCamelCase(
                     this.getLanguageProperties().getFrameworks().get(framework).getControllerProperty().getClassSyntax()).replace("?", ObjectUtility.formatToCamelCase(table))
                 );
+        res=res.replace("]]","");
+        res=res.replace("[[","");
         return res;
     }
 

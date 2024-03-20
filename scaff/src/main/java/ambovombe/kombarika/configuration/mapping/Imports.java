@@ -10,10 +10,7 @@ import lombok.Setter;
 
 import java.util.Arrays;
 
-/**
- *
- * @author Mamisoa
- */
+
 @Getter @Setter
 public class Imports {
     private String[] controller;

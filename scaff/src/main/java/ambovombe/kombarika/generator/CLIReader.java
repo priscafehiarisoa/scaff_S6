@@ -4,10 +4,7 @@
  */
 package ambovombe.kombarika.generator;
 
-/**
- *
- * @author Mamisoa
- */
+
 public class CLIReader {
     String path;
     String packageName;
@@ -46,7 +43,7 @@ public class CLIReader {
     public void setTable(String table) {
         this.table = table;
     }
-    
+
     //METHODS
     public void getData(String[] str) throws Exception{
         if(!str[0].equals("generate"))

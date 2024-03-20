@@ -4,10 +4,7 @@
  */
 package ambovombe.kombarika.configuration.mapping;
 
-/**
- *
- * @author Mamisoa
- */
+
 public class TypeProperty {
     private String type;
     private String packageName;
@@ -28,7 +25,7 @@ public class TypeProperty {
     public void setPackageName(String packageName) {
         this.packageName = packageName;
     }
-    
+
     //CONSTRUCTORS
     public TypeProperty(){}
 }

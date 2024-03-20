@@ -9,10 +9,7 @@ import ambovombe.kombarika.generator.service.DbService;
 
 import java.sql.SQLException;
 import java.util.HashMap;
-/**
- *
- *  @author Mamisoa
- */
+
 public class Test {
 
     /**
@@ -23,6 +20,7 @@ public class Test {
     public static void main(String[] args) throws Exception {
         CodeGenerator codeGenerator = new CodeGenerator();
         String path = "/Users/priscafehiarisoadama/RiderProjects/WebApplication5/WebApplication5/";
+//        String path = "./";
         String framework = "csharp:dotnet";
         String packageName = "com.district.test";
         String entity = "entity";

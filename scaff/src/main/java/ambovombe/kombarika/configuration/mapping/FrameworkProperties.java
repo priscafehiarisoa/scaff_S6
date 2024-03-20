@@ -7,9 +7,7 @@ import lombok.Setter;
 
 import java.io.File;
 
-/**
- * @author rakharrs
- */
+
 @Getter @Setter
 public class FrameworkProperties {
     String template;

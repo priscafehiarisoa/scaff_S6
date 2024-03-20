@@ -26,10 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 
 
-/**
- * @author Mamisoa
- * @author rakharrs
- */
+
 @Getter @Setter
 public class CodeGenerator {
     DbConnection dbConnection;
