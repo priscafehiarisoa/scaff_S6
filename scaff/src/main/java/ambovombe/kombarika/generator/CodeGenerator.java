@@ -165,6 +165,7 @@ public class CodeGenerator {
         FileUtility.createDirectory(directory,path);
         path = path + File.separator + directory;
         String fileName = GeneratorService.getFileName(table, this.getViewDetails().getViews().get(viewType).getExtension());
+        // eto no amboarina raha angular na ionic
         FileUtility.generateFile(path, fileName, view);
     }
 
@@ -290,6 +291,7 @@ public class CodeGenerator {
 
     public void generateAll(
         String path,
+        String viewPath,
         String packageName,
         String entity,
         String controller,

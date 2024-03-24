@@ -1,0 +1,32 @@
+import {inject, Injectable} from '@angular/core';
+import {HttpClient} from "@angular/common/http";
+
+// generate
+const BASE_URL = 'http://localhost:5099/api/';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class GenerateService {
+  private http= inject(HttpClient)
+  //geerate
+
+  constructor() { }
+  //
+  getAll(link: string) {
+    return this.http.get(`${BASE_URL}${link}`);
+  }
+
+  create(link: string, requestBody: any) {
+    return this.http.post(`${BASE_URL}${link}`, requestBody);
+  }
+
+  update(link: string, requestBody: any) {
+
+    return this.http.put(`${BASE_URL}${link}`, requestBody);
+  }
+
+  delete(link: string, idObject: string) {
+    return this.http.delete(`${BASE_URL}${link}/${idObject}`);
+  }
+}

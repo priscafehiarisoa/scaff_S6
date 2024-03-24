@@ -27,7 +27,8 @@ public class Test {
         String controller = "controller";
         String repository = "repository";
         String view = "view";
-        String viewType = "react";
+        String viewType = "angular-ionic";
+        String viewPath="/Users/priscafehiarisoadama/IdeaProjects/learnIonicAngular/reciclica-app";
         String url = "http://localhost:8080/";
         try{
             // String[] tables = {"district","region"};
@@ -40,9 +41,9 @@ public class Test {
             //     System.out.println(set.getKey() + " " + set.getValue());
             // }
             String[] tables = DbService.getAllTablesArrays(codeGenerator.getDbConnection());
-            // for(String table: tables)
-            //     System.out.println(table);
-            codeGenerator.generateAll(path, packageName, entity, controller, repository, view, viewType, url, tables, framework);
+//             for(String table: tables)
+//                 System.out.println(table);
+            codeGenerator.generateAll(path,viewPath, packageName, entity, controller, repository, view, viewType, url, tables, framework);
             // codeGenerator.generateEntity(path, "car", packageName+".entity", framework);
         }catch(Exception e){
             e.printStackTrace();

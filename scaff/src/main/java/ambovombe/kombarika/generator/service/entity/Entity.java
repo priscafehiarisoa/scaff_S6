@@ -7,6 +7,7 @@ import ambovombe.kombarika.database.DbConnection;
 import ambovombe.kombarika.generator.service.DbService;
 import ambovombe.kombarika.generator.service.GeneratorService;
 import ambovombe.kombarika.generator.utils.ObjectUtility;
+import ambovombe.kombarika.utils.Misc;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -83,6 +84,10 @@ public class Entity {
             }
             String temp = foreignKeys.get(set.getKey());
             if(temp != null){
+                String virtual="";
+                if(this.getLanguageProperties().getAnnotationSyntax().equals("[?]")){
+                    virtual="public virtual ";
+                }
                 res += "\t"
                         + this.getLanguageProperties().getAnnotationSyntax().replace("?", this.getAnnotationProperty().getConstraints().getForeignKey().getAnnotation()
                             .replace("?", set.getKey())) + "\n";
@@ -90,7 +95,7 @@ public class Entity {
                     res += "\t"
                             + this.getLanguageProperties().getAnnotationSyntax().replace("?",this.getAnnotationProperty().getConstraints().getForeignKey().getManyToOne())+ "\n";
                 }
-                res += "\t"
+                res += "\t" +virtual
                     + this.getLanguageProperties().getFieldSyntax()
                         .replace("Type", ObjectUtility.capitalize(ObjectUtility.formatToCamelCase(temp)))
                         .replace("field", ObjectUtility.formatToCamelCase(temp))
@@ -129,6 +134,21 @@ public class Entity {
         return rep;
     }
 
+    public String getToStringMethod(String table,HashMap<String, String> columns){
+        String body="";
+        String json="";
+        for (Map.Entry<String, String> set : columns.entrySet()) {
+            json+=set.getKey()+":"+set.getKey()+",";
+        }
+        json=json.substring(0,json.length()-1);
+        body+= Misc.tabulate(this.getLanguageProperties().getToString()
+                .replace("#name#",table
+                        .replace(" #jsonContent# ",json)));
+        System.out.println("--=--=--="+json);
+
+        return body;
+    }
+
     public String generateEntity(DbConnection dbConnection, String template, String table, String packageName) throws Exception {
         HashMap<String, String> columns = DbService.getColumnNameAndType(dbConnection.getConnection(), table);
         HashMap<String, String> foreignKeys = DbService.getForeignKeys(dbConnection, table);
@@ -140,8 +160,9 @@ public class Entity {
                 .replace("#close-bracket#", this.getLanguageProperties().getCloseBracket())
                 .replace("#fields#", getEntityField(columns, foreignKeys, primaryKeyColumn))
                 .replace("#constructors#", getConstructor(table))
-                .replace("#methods#", "")
+                .replace("#methods#", getToStringMethod(table,columns))
                 .replace("#encapsulation#", getEncapsulation(columns, foreignKeys));
+        System.out.println("]][[]][[=> "+getEntityField(columns, foreignKeys, primaryKeyColumn));
         return res;
     }
 

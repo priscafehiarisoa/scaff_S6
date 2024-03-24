@@ -15,6 +15,7 @@
             "methodSyntax": "public #type# #name#(#arg#){\n #body#\n}",
             "encapsulation":"",
             "extension":"cs",
+            "toString": "public override string ToString()\n{\n    \t\treturn $\"#name#{{ #jsonContent# }}\";\n    \t}",
             "frameworks" : {
                 "dotnet" : {
                     "template" : "Template.code",
@@ -56,16 +57,17 @@
                     "crudMethod" : {
                         "findAll": "return Ok(_context.?.ToList());",
                         "findById":"",
-                        "delete": "_context.?.Remove(#object#);\n_context.SaveChanges();",
+                        "delete": "\nvar #object# =_context.?.Find(id); \n_context.?.Remove(#object#);\n_context.SaveChanges();\n \t return Ok();",
                         "update": "var temp = #object#;\n_context.SaveChanges();\nreturn Ok();",
                         "save": "_context.?.Add(#object#);\n_context.SaveChanges();\nreturn Ok();"
                     },
                     "controllerProperty" : {
-                        "path": "Route(\"api/[[?]]\")",
+                        "path": "Route(\"api/?\")",
                         "get": "HttpGet",
                         "post": "HttpPost",
                         "put": "HttpPut",
-                        "delete": "HttpDelete",
+                        "pathSyntax":"[?]",
+                        "delete": "HttpDelete(\"{id}\")",
                         "classSyntax": "?Controller : Controller",
                         "returnType": "ActionResult<?>",
                         "field": "private readonly RepositoryDbContext _context;\n\tprivate readonly ILogger<?Controller> _logger;",
@@ -157,7 +159,8 @@
                         "annotationMethodParameter":"",
                         "annotationArgumentParameterFormData":"RequestBody",
                         "annotationArgumentParameterLink":"PathVariable",
-                        "constructor": ""
+                        "constructor": "",
+                        "toString":""
                     },
                     "repositoryProperty" : {
                         "name":"Repository",
@@ -219,7 +222,8 @@
                         "annotationMethodParameter":"",
                         "annotationArgumentParameterFormData":"RequestBody",
                         "annotationArgumentParameterLink":"PathVariable",
-                        "constructor": ""
+                        "constructor": "",
+                        "toString":""
                     },
                     "repositoryProperty" : {
                         "name":"Repository",

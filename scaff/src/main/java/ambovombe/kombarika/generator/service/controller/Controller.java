@@ -2,11 +2,18 @@ package ambovombe.kombarika.generator.service.controller;
 
 import ambovombe.kombarika.configuration.mapping.LanguageProperties;
 import ambovombe.kombarika.configuration.mapping.*;
+import ambovombe.kombarika.database.DbConnection;
+import ambovombe.kombarika.generator.CodeGenerator;
 import ambovombe.kombarika.generator.service.GeneratorService;
 import ambovombe.kombarika.generator.utils.ObjectUtility;
 import ambovombe.kombarika.utils.Misc;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 @Getter @Setter
 public class Controller{
@@ -66,7 +73,42 @@ public class Controller{
         return Misc.tabulate(this.getLanguageProperties().getAnnotationSyntax().replace("?", this.getControllerProperty().getPut()) + "\n" + function);
     }
 
+    public static String getPrimaryKeyType(DbConnection dbConnection,String table){
+        try {
+            Statement statement = dbConnection.connect().createStatement();
+
+            // Replace "your_table" with the name of your table
+            String tableName = table;
+            ResultSet resultSet = statement.executeQuery("SELECT column_name, data_type FROM information_schema.columns WHERE table_name = '" + tableName + "' AND column_name IN (SELECT column_name FROM information_schema.key_column_usage WHERE table_name = '" + tableName + "' AND constraint_name = (SELECT constraint_name FROM information_schema.table_constraints WHERE table_name = '" + tableName + "' AND constraint_type = 'PRIMARY KEY'))");
+            String dataType ="";
+            // Iterate through the primary key columns
+            while (resultSet.next()) {
+                String columnName = resultSet.getString("COLUMN_NAME");
+                dataType =resultSet.getString("DATA_TYPE");
+
+                System.out.println("Primary key column: " + columnName + ", Data type: " + dataType);
+
+            }
+            dbConnection.close();
+            return dataType;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public static String conv(String val){
+        if(val.equals("character varying")){
+            return "string";
+        }if(val.equals("integer")){
+            return "int";
+        }
+        return val;
+    }
     public String delete(String table) throws Exception{
+        // get the primary key type
+        CodeGenerator codeGenerator=new CodeGenerator();
+        DbConnection dbConnection=codeGenerator.getDbConnection();
+        String primKey= conv(getPrimaryKeyType(dbConnection,table));
+        System.out.println("123"+primKey);
         String body = "";
         String args = "";
         args += this.getLanguageProperties().getAnnotationSyntax().replace("?", this.getControllerProperty().getAnnotationArgumentParameterFormData()) + " "
@@ -75,12 +117,16 @@ public class Controller{
         body += Misc.tabulate(this.getCrudMethod().getDelete()
                 .replace("#object#", ObjectUtility.formatToCamelCase(table))
                 .replace("?", ObjectUtility.capitalize(ObjectUtility.formatToCamelCase(table))));
-        body+="\n \t return Ok();";
-        System.out.println("--del--"+body);
+//        body+="\n \t return Ok();";
+        System.out.println("--del--"+ args);
+//        String state="\n_context."+args.split(" ")[1]+".Find("+args.split(" ")[2]+"); \n";
+
+
         String function =  this.getLanguageProperties().getMethodSyntax()
                 .replace("#name#", "delete")
                 .replace("#type#", this.getControllerProperty().getReturnType().replace("?", ObjectUtility.capitalize(ObjectUtility.formatToCamelCase(table))))
-                .replace("#arg#", args)
+                .replace("#arg#", primKey + " id")
+                .replace("#argument#", args.split(" ")[2])
                 .replace("#body#", body);
         System.out.println("=func="+function);
         return Misc.tabulate(this.getLanguageProperties().getAnnotationSyntax().replace("?", this.getControllerProperty().getDelete()) + "\n" + function);
@@ -99,6 +145,8 @@ public class Controller{
         return Misc.tabulate(this.getLanguageProperties().getAnnotationSyntax().replace("?", this.getControllerProperty().getGet()) + "\n" + function);
     }
 
+
+
     public String findById(String table) throws Exception{
         String res = "";
         return res;
@@ -116,6 +164,7 @@ public class Controller{
         stringBuilder.append(delete);
         stringBuilder.append("\n");
         stringBuilder.append(findAll);
+
         return stringBuilder.toString();
     }
 
@@ -143,8 +192,7 @@ public class Controller{
                 + ObjectUtility.capitalize(ObjectUtility.formatToCamelCase(
                     this.getLanguageProperties().getFrameworks().get(framework).getControllerProperty().getClassSyntax()).replace("?", ObjectUtility.formatToCamelCase(table))
                 );
-        res=res.replace("]]","");
-        res=res.replace("[[","");
+
         return res;
     }
 

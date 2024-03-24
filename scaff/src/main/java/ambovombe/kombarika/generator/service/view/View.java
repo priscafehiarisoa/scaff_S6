@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ambovombe.kombarika.configuration.mapping.FrameworkProperties;
 import ambovombe.kombarika.configuration.mapping.ViewProperties;
 import ambovombe.kombarika.database.DbConnection;
 import ambovombe.kombarika.generator.parser.FileUtility;
@@ -17,6 +18,7 @@ import lombok.Setter;
 @Getter @Setter
 public class View {
     ViewProperties viewProperties;
+    FrameworkProperties frameworkProperties;
 
     public String getInputInsert(HashMap<String, String> columns, HashMap<String, String> foreignKeys, List<String> primaryKeys, String url, String id, String attribute) throws Exception{
         String res ="";
@@ -107,10 +109,14 @@ public class View {
     public String getTableValue(HashMap<String, String> columns, HashMap<String, String> foreignKeys, String attribute){
         String res ="";
         String template = this.getViewProperties().getTableValue();
+        System.out.println("table values : ");
+        System.out.println(template);
+        System.out.println(attribute);
         for (Map.Entry<String, String> set : columns.entrySet()) {
             if(foreignKeys.get(set.getKey()) != null){
                 res += "\t\t" + template
                 .replace("#values#", ObjectUtility.formatToCamelCase(foreignKeys.get(set.getKey())) + "." + ObjectUtility.formatToCamelCase(attribute)) + "\n";
+                System.out.println(res);
             }else{
                 res += "\t\t" + template
                 .replace("#values#", ObjectUtility.formatToCamelCase(set.getKey())) + "\n";
@@ -208,6 +214,7 @@ public class View {
         HashMap<String, String> idAndAttribute = this.getIdAndAttribute(dbConnection, foreignKeys);
         String id = idAndAttribute.get("id");
         String attribute = idAndAttribute.get("attribute");
+        System.out.println("qwerty : => => "+attribute);
         res = template.replace("#header#", getHeaders( columns))
         .replace("#inputInsert#", getInputInsert(columns, foreignKeys, primaryKeys, url, id, attribute))
         .replace("#inputUpdate#", getInputUpdate(columns, foreignKeys, primaryKeys, url, id))
@@ -221,6 +228,32 @@ public class View {
         .replace("#id#", ObjectUtility.formatToCamelCase(primaryKeys.get(0)))
         .replace("#path#", path)
         .replace("#label#", ObjectUtility.formatToCamelCase(primaryKeys.get(0)));
+
+        System.out.println("path:=> "+path);
+//        String res = "";
+//        String tempPath = Misc.getViewTemplateLocation().concat(File.separator).concat(this.getViewProperties().getTemplate());
+//        String template = FileUtility.readOneFile(tempPath);
+//        List<String> primaryKeys = DbService.getPrimaryKey(dbConnection, table);
+//        String path =  ObjectUtility.formatToCamelCase(table);
+//        path = this.getFrameworkProperties().getControllerProperty().getPathSyntax().replace("?", path);
+//        HashMap<String, String> columns = DbService.getDetailsColumn(dbConnection.getConnection(), table);
+//        HashMap<String, String> foreignKeys = DbService.getForeignKeys(dbConnection, table);
+//        HashMap<String, String> idAndAttribute = this.getIdAndAttribute(dbConnection, foreignKeys);
+//        String id = idAndAttribute.get("id");
+//        String attribute = idAndAttribute.get("attribute");
+//        res = template.replace("#header#", getHeaders( columns))
+//                .replace("#inputInsert#", getInputInsert(columns, foreignKeys, primaryKeys, url, id, attribute))
+//                .replace("#inputUpdate#", getInputUpdate(columns, foreignKeys, primaryKeys, url, id))
+//                .replace("#optionUpdate#", getOptionUpdate(foreignKeys, url, id, attribute))
+//                .replace("#handleInputSelectChange#", getHandleInputSelectChange(columns, foreignKeys, primaryKeys))
+//                .replace("#getValues#", getFetcher(columns, foreignKeys, table))
+//                .replace("#values#", getValues(columns, foreignKeys, table))
+//                .replace("#entity#", ObjectUtility.formatToSpacedString(table))
+//                .replace("#tableValue#", getTableValue(columns, foreignKeys, attribute))
+//                .replace("#url#", url)
+//                .replace("#id#", ObjectUtility.formatToCamelCase(primaryKeys.get(0)))
+//                .replace("#path#", path)
+//                .replace("#label#", ObjectUtility.formatToCamelCase(primaryKeys.get(0)));
 
         return res;
     }

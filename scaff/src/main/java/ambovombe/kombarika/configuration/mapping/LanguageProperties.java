@@ -28,6 +28,7 @@ public class LanguageProperties {
     private String endOfInstruction;
     private String constructorSyntax;
     private String listSyntax;
+    private String toString;
     private HashMap<String, FrameworkProperties> frameworks;
 
     //CONSTRUCTOR
@@ -51,6 +52,8 @@ public class LanguageProperties {
                 ", constructorSyntax='" + constructorSyntax + '\'' +
                 ", listSyntax='" + listSyntax + '\'' +
                 ", frameworks=" + frameworks +
+                ", toString=" + toString +
+
                 '}';
     }
 }
