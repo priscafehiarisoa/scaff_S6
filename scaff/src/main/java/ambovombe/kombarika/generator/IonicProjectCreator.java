@@ -57,7 +57,7 @@ public class IonicProjectCreator {
         }
     }
 
-    private static void addIonicPage(String projectPath, String pageName) {
+    public static void addIonicPage(String projectPath, String pageName) {
         try {
             String[] commands = {
                     "ionic",
@@ -127,7 +127,7 @@ public class IonicProjectCreator {
             System.out.println("Service " + serviceName + " généré avec succès !");
 
             // Récupérer le chemin du fichier de service
-            String serviceFilePath = projectPath + "/src/app/services/" + serviceName.toLowerCase() + ".service.ts";
+            String serviceFilePath = projectPath + "/src/app/" + serviceName.toLowerCase() + ".service.ts";
 
             // Effacer le contenu du fichier de service
             clearFileContent(serviceFilePath);

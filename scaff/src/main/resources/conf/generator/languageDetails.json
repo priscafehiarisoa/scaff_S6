@@ -15,7 +15,7 @@
             "methodSyntax": "public #type# #name#(#arg#){\n #body#\n}",
             "encapsulation":"",
             "extension":"cs",
-            "toString": "public override string ToString()\n{\n    \t\treturn $\"#name#{{ #jsonContent# }}\";\n    \t}",
+            "toString": "",
             "frameworks" : {
                 "dotnet" : {
                     "template" : "Template.code",

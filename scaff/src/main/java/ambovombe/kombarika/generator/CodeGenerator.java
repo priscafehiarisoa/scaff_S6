@@ -18,6 +18,7 @@ import ambovombe.kombarika.generator.service.entity.Entity;
 import ambovombe.kombarika.generator.service.repository.Repository;
 import ambovombe.kombarika.generator.service.view.View;
 import ambovombe.kombarika.generator.utils.ObjectUtility;
+import ambovombe.kombarika.utils.Misc;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -157,16 +158,34 @@ public class CodeGenerator {
     public void generateView(
         String path,
         String table,
+        // view izy ary ambadika ary
         String directory,
         String viewType,
         String url
     ) throws Exception{
         String view = buildView(table, viewType, url);
         FileUtility.createDirectory(directory,path);
-        path = path + File.separator + directory;
         String fileName = GeneratorService.getFileName(table, this.getViewDetails().getViews().get(viewType).getExtension());
+
+//        cas où c'est un projet ionic :
+        if(viewType.equals("angular-ionic")){
+            // on va créer le truc de ionic ici
+            IonicProjectCreator.addIonicPage(path,table);
+            path+= File.separator + "src/app" + File.separator +table;
+            // delete what's in the component
+            String componentName= table+"."+this.getViewDetails().getViews().get(viewType).getExtension();
+            // write the file
+            FileUtility.writeFile(path+File.separator+componentName,view);
+        }
+        else{
+            FileUtility.createDirectory(table,path+ File.separator + directory);
+            path = path + File.separator + directory+ File.separator +table;
+
+        }
+//        FileUtility.createDirectory("test",path);
+//        FileUtility.generateFile(path+"/test", fileName, view);
+
         // eto no amboarina raha angular na ionic
-        FileUtility.generateFile(path, fileName, view);
     }
 
     /**
@@ -284,6 +303,7 @@ public class CodeGenerator {
         String viewType,
         String url
     )  throws Exception{
+
         for (String table : tables) {
             generateView(path, table, view, viewType, url);
         }
@@ -305,6 +325,15 @@ public class CodeGenerator {
         generateAllEntity(path, tables, packageName ,entity, framework);
         generateAllRepository(path, tables, packageName , entity, repository, framework);
         generateAllController(path, tables, packageName, entity, controller, repository, framework);
-        generateAllView(path, tables, view, viewType, url);
+        generateViewService(viewPath, viewType);
+        generateAllView(viewPath, tables, view, viewType, url);
+    }
+
+    private void generateViewService(String path, String viewType) {
+        if(viewType.equals("angular-ionic")){
+            String tempPath = Misc.getViewTemplateLocation().concat(File.separator).concat(viewType).concat(File.separator).concat(this.getViewDetails().getViews().get(viewType).getServiceTemplate());
+
+            IonicProjectCreator.generateIonicService(path,this.getViewDetails().getViews().get(viewType).getServiceFileName(),tempPath);
+        }
     }
 }

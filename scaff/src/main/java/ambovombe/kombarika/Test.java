@@ -26,9 +26,11 @@ public class Test {
         String entity = "entity";
         String controller = "controller";
         String repository = "repository";
-        String view = "view";
+        String view = "viewTest";
         String viewType = "angular-ionic";
-        String viewPath="/Users/priscafehiarisoadama/IdeaProjects/learnIonicAngular/reciclica-app";
+//        String viewPath="/Users/priscafehiarisoadama/IdeaProjects/learnIonicAngular/reciclica-app";
+//        String viewPath="./";
+        String viewPath="/Users/priscafehiarisoadama/IdeaProjects/learnIonicAngular/ionicAngularTest2";
         String url = "http://localhost:8080/";
         try{
             // String[] tables = {"district","region"};
