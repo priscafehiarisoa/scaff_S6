@@ -54,7 +54,8 @@ public class CodeGenerator {
         String lang)
     throws Exception{
         String[] splittedLang = lang.split(":");
-        String language = splittedLang[0]; String framework = splittedLang[1];
+        String language = splittedLang[0];
+        String framework = splittedLang[1];
         this.setFrameworkProperties(this.getLanguageDetails().getLanguages().get(language).getFrameworks().get(framework));
         generateEntityFile(path, table, packageName, language, framework);
     }
@@ -65,11 +66,12 @@ public class CodeGenerator {
         String packageName,
         String repository,
         String entity,
-        String lang
+        String lang,
+        String pagination
     ) throws Exception{
         String[] splittedLang = lang.split(":");
         String language = splittedLang[0]; String framework = splittedLang[1];
-        String controller = buildController(table, packageName, repository, entity, language, framework);
+        String controller = buildController(table, packageName, repository, entity, language, framework,pagination);
         generateControllerFile(path, table, packageName, language, framework, controller);
     }
 
@@ -220,7 +222,7 @@ public class CodeGenerator {
         FileUtility.generateFile(path, GeneratorService.getFileName(table, languageProperties.getExtension()), entity);
     }
 
-    public String buildController(String table, String packageName, String repository, String entity, String language, String framework) throws Exception{
+    public String buildController(String table, String packageName, String repository, String entity, String language, String framework,String paginations) throws Exception{
         LanguageProperties languageProperties = getLanguageDetails().getLanguages().get(language);
         FrameworkProperties frameworkProperties = languageProperties.getFrameworks().get(framework);
         String template = frameworkProperties.getTemplate();
@@ -230,7 +232,27 @@ public class CodeGenerator {
         controller.setCrudMethod(frameworkProperties.getCrudMethod());
         controller.setImports(frameworkProperties.getImports());
         controller.setLanguageProperties(languageProperties);
-        return controller.generateController(template, table, packageName, repository, entity, framework);
+        return controller.generateController(template, table, packageName, repository, entity, framework,paginations);
+    }
+
+    private void generatePaginationClasses(String path,String packageName,String lang) throws Exception {
+
+        String[] splittedLang = lang.split(":");
+        String framework = splittedLang[1];
+        String language = splittedLang[0];
+        String directory=packageName.replace(".", File.separator)+ File.separator+"pagination";
+        String directoryPath=path+directory;
+        this.setFrameworkProperties(this.getLanguageDetails().getLanguages().get(language).getFrameworks().get(framework));
+        FileUtility.createDirectory(packageName.replace(".", File.separator)+ File.separator+"pagination",path);
+
+        String pageListTemplate="";
+
+            pageListTemplate = getFrameworkProperties().getPageListTemp();
+        String pageParamtersTemplate=getFrameworkProperties().getPageParameterTemp();
+        LanguageProperties languageProperties = getLanguageDetails().getLanguages().get(language);
+        System.out.println("haha"+pageListTemplate);
+        FileUtility.generateFile(directoryPath,GeneratorService.getFileName("PageList",languageProperties.getExtension()),pageListTemplate);
+        FileUtility.generateFile(directoryPath,GeneratorService.getFileName("PageParameters",languageProperties.getExtension()),pageParamtersTemplate);
     }
 
     public void generateControllerFile(
@@ -253,7 +275,6 @@ public class CodeGenerator {
         view.setViewProperties(this.getViewDetails().getViews().get(viewType));
         return view.generateView(table, url, dbConnection);
     }
-
     public void generateAllEntity(
         String path,
         String[] tables,
@@ -265,6 +286,7 @@ public class CodeGenerator {
             generateEntity(path, table, packageName + "." + entity, framework);
         }
     }
+
     public void generateAllController(
         String path,
         String[] tables,
@@ -275,7 +297,7 @@ public class CodeGenerator {
         String framework
     )  throws Exception{
         for (String table : tables) {
-            generateController(path, table, packageName + "." + controller, packageName + "." + repository, packageName + "." + "entity", framework);
+            generateController(path, table, packageName + "." + controller, packageName + "." + repository, packageName + "." + "entity", framework,packageName+".paginations");
         }
     }
 
@@ -327,6 +349,7 @@ public class CodeGenerator {
         generateAllController(path, tables, packageName, entity, controller, repository, framework);
         generateViewService(viewPath, viewType);
         generateAllView(viewPath, tables, view, viewType, url);
+        generatePaginationClasses(path,packageName,framework);
     }
 
     private void generateViewService(String path, String viewType) {
@@ -335,5 +358,15 @@ public class CodeGenerator {
 
             IonicProjectCreator.generateIonicService(path,this.getViewDetails().getViews().get(viewType).getServiceFileName(),tempPath);
         }
+    }
+
+    public static void main(String[] args) throws Exception {
+        CodeGenerator codeGenerator = new CodeGenerator();
+        String path="./";
+
+        String packageName="test.newT";
+        String lang="csharp:dotnet";
+        codeGenerator.generatePaginationClasses(path,packageName,lang);
+
     }
 }

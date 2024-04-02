@@ -20,13 +20,17 @@
                 "dotnet" : {
                     "template" : "Template.code",
                     "repository": "Template.code",
+                    "pageList": "PagedList.code",
+                    "pageparameters": "PageParameters.code",
                     "isOneRepository":"true",
                     "imports": {
                         "controller":[
                             "System.Diagnostics",
                             "Microsoft.AspNetCore.Mvc",
+                            "Newtonsoft.Json",
                             "packageName",
-                            "entity"
+                            "entity",
+                            "paginations"
                         ],
                         "entity":[
                             "System.ComponentModel.DataAnnotations",
@@ -75,7 +79,8 @@
                         "annotationMethodParameter":"",
                         "annotationArgumentParameterFormData":"FromBody",
                         "annotationArgumentParameterLink":"",
-                        "constructor": "\tpublic #name#Controller(RepositoryDbContext context) { _context = context; }"
+                        "constructor": "\tpublic #name#Controller(RepositoryDbContext context) { _context = context; }",
+                        "paginationMethod": "[HttpGet(\"pagination\")]\n\tpublic ActionResult get?Pagination([FromQuery]PageParameters pageParameters)\n\t{\n\t\tvar item = PagedList<?>.ToPagedList(_context.?,\n\t\t\tpageParameters.PageNumber, pageParameters.PageSize);\n\t\tvar metadata = new\n\t\t{\n\t\t\titem.TotalCount,\n\t\t\titem.PageSize,\n\t\t\titem.CurrentPage,\n\t\t\titem.TotalPages,\n\t\t\titem.HasNext,\n\t\t\titem.HasPrevious\n\t\t};\n\t\tResponse.Headers.Add(\"X-Pagination\", JsonConvert.SerializeObject(metadata));\n\t\treturn Ok(item);\n\t}"
                     },
                     "repositoryProperty" : {
                         "name":"DbContext",
@@ -104,6 +109,8 @@
                 "spring-boot" : {
                     "template" : "Template.code",
                     "repository": "Template.code",
+                    "pageList": "",
+                    "pageparameters": "",
                     "isOneRepository":"false",
                     "imports" : {
                         "controller":[

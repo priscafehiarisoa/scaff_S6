@@ -11,6 +11,8 @@ import java.io.File;
 @Getter @Setter
 public class FrameworkProperties {
     String template;
+    String pageList;
+    String pageparameters;
     String repository;
     boolean isOneRepository;
     Imports imports;
@@ -24,6 +26,14 @@ public class FrameworkProperties {
 
     public String getTemplatePath(){
         return Misc.getSourceTemplateLocation() + File.separator + this.template;
+    }
+
+    public String getPageListTemplate(){
+        System.out.println("template location : "+Misc.getSourceTemplateLocation() );
+        return Misc.getSourceTemplateLocation() + File.separator + this.pageList;
+    }
+    public String getPageParamTemplate(){
+        return Misc.getSourceTemplateLocation() + File.separator + this.pageparameters;
     }
 
     public String getTemplate(){
@@ -40,18 +50,45 @@ public class FrameworkProperties {
         return this.template;
     }
 
+    public String getPageListTemp() {
+        String temp="";
+            String path = getPageListTemplate();
+            System.out.println("plpl : "+path);
+            try {
+                temp=(FileUtility.readOneFile(path));
+            } catch (Exception e) {
+                e.printStackTrace(System.out);
+                throw new RuntimeException(e);
+            }
+        return temp;
+    }
+    public String getPageParameterTemp() {
+        String temp="";
+
+            String path = getPageParamTemplate();
+            try {
+                temp=(FileUtility.readOneFile(path));
+            } catch (Exception e) {
+                e.printStackTrace(System.out);
+                throw new RuntimeException(e);
+            }
+        return temp;
+    }
+
     @Override
     public String toString() {
-        return " \n FrameworkProperties{" +
-                " \n template='" + template + '\'' +
-                " \n , repository='" + repository + '\'' +
-                " \n , isOneRepository=" + isOneRepository +
-                " \n , imports=" + imports +
-                " \n , annotationProperty=" + annotationProperty +
-                " \n , crudMethod=" + crudMethod +
-                " \n , controllerProperty=" + controllerProperty +
-                " \n , repositoryProperty=" + repositoryProperty +
-                " \n , init=" + init +
+        return "FrameworkProperties{" +
+                "template='" + template + '\'' +
+                ", pageList='" + pageList + '\'' +
+                ", pageparameters='" + pageparameters + '\'' +
+                ", repository='" + repository + '\'' +
+                ", isOneRepository=" + isOneRepository +
+                ", imports=" + imports +
+                ", annotationProperty=" + annotationProperty +
+                ", crudMethod=" + crudMethod +
+                ", controllerProperty=" + controllerProperty +
+                ", repositoryProperty=" + repositoryProperty +
+                ", init=" + init +
                 '}';
     }
 }

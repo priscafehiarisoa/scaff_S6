@@ -33,6 +33,7 @@ public class FileUtility {
 
     public static void createDirectory(String directory, String path) throws Exception{
         Path directoryPath = Paths.get(path + File.separator + directory);
+        System.out.println("eto "+directory);
         // deleteRecursively(directoryPath);
         Files.createDirectories(directoryPath);
         

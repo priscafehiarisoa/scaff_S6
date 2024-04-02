@@ -22,6 +22,7 @@ public class ControllerProperty {
     String annotationArgumentParameterFormData;
     String annotationArgumentParameterLink;
     String constructor;
+    String paginationMethod;
 
     @Override
     public String toString() {

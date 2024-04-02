@@ -131,6 +131,11 @@ public class Controller{
         System.out.println("=func="+function);
         return Misc.tabulate(this.getLanguageProperties().getAnnotationSyntax().replace("?", this.getControllerProperty().getDelete()) + "\n" + function);
     }
+    public String findAllPagination(String table){
+        String body = "";
+        body+=Misc.tabulate(this.getControllerProperty().getPaginationMethod()).replace("?",ObjectUtility.capitalize(ObjectUtility.formatToCamelCase(table)));
+        return body;
+    }
 
     public String findAll(String table){
         String body = "";
@@ -157,6 +162,7 @@ public class Controller{
         String findAll = findAll(table);
         String update = update(table);
         String delete = delete(table);
+        String findAllPagination=findAllPagination(table);
         stringBuilder.append(save);
         stringBuilder.append("\n");
         stringBuilder.append(update);
@@ -164,6 +170,8 @@ public class Controller{
         stringBuilder.append(delete);
         stringBuilder.append("\n");
         stringBuilder.append(findAll);
+        stringBuilder.append("\n");
+        stringBuilder.append(findAllPagination);
 
         return stringBuilder.toString();
     }
@@ -196,16 +204,20 @@ public class Controller{
         return res;
     }
 
-    public String getControllerImport(String repository, String entity, String table) throws Exception{
+    public String getControllerImport(String repository, String entity, String table,String paginations) throws Exception{
         String res = "";
         String imp = this.getLanguageProperties().getImportSyntax();
         for(String item : this.getImports().getController()){
+            System.out.println("item "+ item);
             item = item
             .replace("packageName", repository)
             .replace("className", ObjectUtility.capitalize(ObjectUtility.formatToCamelCase(table)))
-            .replace("entity", entity);
+            .replace("entity", entity)
+            .replace("paginations", paginations);
             res += imp+ " " + item + "" + this.getLanguageProperties().getEndOfInstruction() + "\n";
         }
+        System.out.println(0000000000000000000000);
+        System.out.println(res);
         return res;
     }
 
@@ -218,9 +230,9 @@ public class Controller{
         return res;
     }
 
-    public String generateController(String template, String table, String packageName, String repository, String entity, String framework) throws Exception {
+    public String generateController(String template, String table, String packageName, String repository, String entity, String framework,String pagination) throws Exception {
         String res = template.replace("#package#", GeneratorService.getPackage(this.getLanguageProperties(), packageName))
-                .replace("#imports#", getControllerImport(repository, entity, table))
+                .replace("#imports#", getControllerImport(repository, entity, table,pagination))
                 .replace("#class#", getControllerClass(table, framework))
                 .replace("#open-bracket#", languageProperties.getOpenBracket())
                 .replace("#close-bracket#", languageProperties.getCloseBracket())
