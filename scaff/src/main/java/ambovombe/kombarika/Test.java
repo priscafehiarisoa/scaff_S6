@@ -30,7 +30,7 @@ public class Test {
         String viewType = "angular-ionic";
 //        String viewPath="/Users/priscafehiarisoadama/IdeaProjects/learnIonicAngular/reciclica-app";
 //        String viewPath="./";
-        String viewPath="/Users/priscafehiarisoadama/IdeaProjects/learnIonicAngular/ionicAngularTest2";
+        String viewPath="/Users/priscafehiarisoadama/IdeaProjects/learnIonicAngular/reciclica-app";
         String url = "http://localhost:8080/";
         try{
             // String[] tables = {"district","region"};

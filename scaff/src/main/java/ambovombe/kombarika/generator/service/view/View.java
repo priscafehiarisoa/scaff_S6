@@ -20,33 +20,7 @@ public class View {
     ViewProperties viewProperties;
     FrameworkProperties frameworkProperties;
 
-    public String getInputInsert(HashMap<String, String> columns, HashMap<String, String> foreignKeys, List<String> primaryKeys, String url, String id, String attribute) throws Exception{
-        String res ="";
-        String template = this.getViewProperties().getInputInsert();
-        for (Map.Entry<String, String> set : columns.entrySet()) {
-            if (!primaryKeys.contains(set.getKey())) {
-                String temp = foreignKeys.get(set.getKey());
-                if(temp != null){
-                    String option = this.getViewProperties().getOption()
-                        .replace("#url#", url)
-                        .replace("#path#", ObjectUtility.formatToCamelCase(temp))
-                        .replace("#label#", temp)
-                        .replace("#id#", ObjectUtility.formatToCamelCase(id))
-                        .replace("#attribute#", ObjectUtility.formatToCamelCase(attribute));
-                    option = Misc.tabulate(Misc.tabulate(option));
-                    res += this.getViewProperties().getSelect()
-                    .replace("#name#", ObjectUtility.formatToCamelCase(temp))
-                    .replace("#option#", option);
-                    continue;
-                }
-                res += template
-                .replace("#label#", ObjectUtility.formatToSpacedString(set.getKey()))
-                .replace("#type#", this.getViewProperties().getListMapping().get(set.getValue().split("\\.")[set.getValue().split("\\.").length -1]))
-                .replace("#name#", ObjectUtility.formatToCamelCase(set.getKey())) + "\n";
-            }
-        }
-        return Misc.tabulate(res);
-    }
+
 
     public String getOptionUpdate(HashMap<String, String> foreignKeys, String url, String id, String attribute) throws Exception{
         String res = "";
@@ -66,7 +40,33 @@ public class View {
         }
         return Misc.tabulate(res);
     }
-
+    public String getInputInsert(HashMap<String, String> columns, HashMap<String, String> foreignKeys, List<String> primaryKeys, String url, String id, String attribute) throws Exception{
+        String res ="";
+        String template = this.getViewProperties().getInputInsert();
+        for (Map.Entry<String, String> set : columns.entrySet()) {
+            if (!primaryKeys.contains(set.getKey())) {
+                String temp = foreignKeys.get(set.getKey());
+                if(temp != null){
+                    String option = this.getViewProperties().getOption()
+                            .replace("#url#", url)
+                            .replace("#path#", ObjectUtility.formatToCamelCase(temp))
+                            .replace("#label#", temp)
+                            .replace("#id#", ObjectUtility.formatToCamelCase(id))
+                            .replace("#attribute#", ObjectUtility.formatToCamelCase(attribute));
+                    option = Misc.tabulate(Misc.tabulate(option));
+                    res += this.getViewProperties().getSelect()
+                            .replace("#name#", ObjectUtility.formatToCamelCase(temp))
+                            .replace("#option#", option);
+                    continue;
+                }
+                res += template
+                        .replace("#label#", ObjectUtility.formatToSpacedString(set.getKey()))
+                        .replace("#type#", this.getViewProperties().getListMapping().get(set.getValue().split("\\.")[set.getValue().split("\\.").length -1]))
+                        .replace("#name#", ObjectUtility.formatToCamelCase(set.getKey())) + "\n";
+            }
+        }
+        return Misc.tabulate(res);
+    }
     public String getInputUpdate(HashMap<String, String> columns, HashMap<String, String> foreignKeys, List<String> primaryKeys, String url, String id) throws Exception{
         String res ="";
         String template = this.getViewProperties().getInputUpdate();

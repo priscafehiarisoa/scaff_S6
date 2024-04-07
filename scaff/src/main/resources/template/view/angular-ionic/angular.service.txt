@@ -29,4 +29,7 @@ export class GenerateService {
   delete(link: string, idObject: string) {
     return this.http.delete(`${BASE_URL}${link}/${idObject}`);
   }
+  getAllPaginated(link: string, pageNumber : number, pageSize : number){
+     return this.http.get(`${BASE_URL}${link}/pagination?PageNumber=${pageNumber}&PageSize=${pageSize}`,{observe:"response"})
+   }
 }
