@@ -56,7 +56,14 @@ import {GenerateService} from "../generate.service";
 
        <ion-item-divider color="light" class="ion-margin" style=" position: sticky; top: 0; z-index: 10;">
                 <ion-label>page displayed : {{this.api_header.CurrentPage}}/{{this.api_header.TotalPages}} , total items : {{this.api_header.TotalCount}}, item displayed per page : {{this.api_header.PageSize}}</ion-label>
-              </ion-item-divider>
+       <!--          page to display -->
+                 <ion-select aria-label="page size" [(ngModel)]="pageSize" label="page size" [value]="pageSize" style="width: 10% ;" slot="end" (ionChange)="onPageSizeChange()">
+                   <ion-select-option value="10">10</ion-select-option>
+                   <ion-select-option value="20">20</ion-select-option>
+                   <ion-select-option value="50">50</ion-select-option>
+                 </ion-select>
+       <!--          end page to display-->
+        </ion-item-divider>
 
         <ion-grid>
           <ion-row style="font-weight: bolder; font-size: 130%">
@@ -68,17 +75,17 @@ import {GenerateService} from "../generate.service";
           </ion-row>
 
 <!--          a modifier table content -->
-          <ion-row *ngFor="let item of items">
+          <ion-row *ngFor="let item of items ; let i = index">
            #tableValue#
             <ion-col> <ion-button
               color="primary"
-              id="open-modify-modal{{item.nom}}"
+              id="open-modify-modal{{i}}"
               (click)="show(item)"
             >modifier</ion-button></ion-col>
             <ion-col> <ion-button color="danger" (click)="delete(item.#id#)" >supprimer</ion-button></ion-col>
 
 <!--            end table content -->
-            <ion-modal trigger="open-modify-modal{{item.nom}}" (willDismiss)="onWillDismiss($event)" id="mod2" >
+            <ion-modal trigger="open-modify-modal{{i}}" (willDismiss)="onWillDismiss($event)" id="mod2" >
               <ng-template>
                 <ion-header>
                   <ion-toolbar>
@@ -109,10 +116,23 @@ import {GenerateService} from "../generate.service";
           </ion-row>
 
         </ion-grid>
-        <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
-           <ion-infinite-scroll-content></ion-infinite-scroll-content>
-        </ion-infinite-scroll>
-      </ion-card-content>
+        <!--   infinite scroll -->
+                <ion-infinite-scroll [disabled]="!this.api_header.HasNext || !this.infiniteScroll" (ionInfinite)="doInfinite($event)">
+                  <ion-infinite-scroll-content></ion-infinite-scroll-content>
+                </ion-infinite-scroll>
+              </ion-card-content>
+
+              <!-- Pagination -->
+              <ion-footer>
+                <ion-toolbar>
+                  <ion-buttons slot="start">
+                    <ion-button (click)="goToPreviousPage()" [disabled]="!this.api_header.HasPrevious">Précédent</ion-button>
+                  </ion-buttons>
+                  <ion-buttons slot="end">
+                    <ion-button (click)="goToNextPage()" [disabled]="!this.api_header.HasNext">Suivant</ion-button>
+                  </ion-buttons>
+                </ion-toolbar>
+              </ion-footer>
     </ion-card>
     <!--modify part-->
 
@@ -138,9 +158,10 @@ export class #entity#Page implements OnInit {
   };
   updateFormData:any={}
   items: any[]=[];
-  pageSize:number=4;
+  pageSize:number=10;
   pageNumber:number=1;
   api_header:any={}
+  infiniteScroll:boolean=false
 
 
 #values#
@@ -195,11 +216,16 @@ export class #entity#Page implements OnInit {
   }
 
   private loadItems(folder: string) {
-     this.genService.getAllPaginated(this.linked,this.pageNumber,this.pageSize).subscribe((data: any) => {
-          this.api_header=JSON.parse(data.headers.get("x-pagination"))
-          this.items = [...this.items, ...data.body];
-        });
-  }
+     this.genService.getAllPaginated(this.linked, this.pageNumber, this.pageSize).subscribe((data: any) => {
+       this.api_header = JSON.parse(data.headers.get("x-pagination"))
+       if(this.infiniteScroll){
+         this.items = [...this.items, ...data.body];
+       }
+       else{
+         this.items=data.body;
+       }
+     });
+   }
     doInfinite(infiniteScroll: any) {
 
       if(this.api_header.TotalPages!==this.pageNumber){
@@ -210,4 +236,23 @@ export class #entity#Page implements OnInit {
         }, 800);
       }
     }
+    //   pagination
+
+      goToNextPage() {
+        const totalPages = this.api_header.TotalPages;
+        if (this.pageNumber < totalPages) {
+          this.pageNumber++;
+          this.loadItems(this.folder);
+        }
+      }
+
+      goToPreviousPage() {
+        if (this.pageNumber > 1) {
+          this.pageNumber--;
+          this.loadItems(this.folder);
+        }
+      }
+      onPageSizeChange() {
+          this.loadItems(this.folder)
+        }
 }

@@ -250,9 +250,22 @@ public class CodeGenerator {
             pageListTemplate = getFrameworkProperties().getPageListTemp();
         String pageParamtersTemplate=getFrameworkProperties().getPageParameterTemp();
         LanguageProperties languageProperties = getLanguageDetails().getLanguages().get(language);
-        System.out.println("haha"+pageListTemplate);
         FileUtility.generateFile(directoryPath,GeneratorService.getFileName("PageList",languageProperties.getExtension()),pageListTemplate);
         FileUtility.generateFile(directoryPath,GeneratorService.getFileName("PageParameters",languageProperties.getExtension()),pageParamtersTemplate);
+    }
+
+    public void generateAuthentificationClass(String path, String packageName,String lang) throws Exception {
+
+        String[] splittedLang = lang.split(":");
+        String framework = splittedLang[1];
+        String language = splittedLang[0];
+        String directory=packageName.replace(".", File.separator)+ File.separator+"controller";
+        String directoryPath=path+directory;
+        LanguageProperties languageProperties = getLanguageDetails().getLanguages().get(language);
+        this.setFrameworkProperties(this.getLanguageDetails().getLanguages().get(language).getFrameworks().get(framework));
+        String template = this.getFrameworkProperties().getAuthentificationTemplate();
+        FileUtility.generateFile(directoryPath,GeneratorService.getFileName("AuthController",languageProperties.getExtension()),template);
+
     }
 
     public void generateControllerFile(
@@ -347,9 +360,11 @@ public class CodeGenerator {
         generateAllEntity(path, tables, packageName ,entity, framework);
         generateAllRepository(path, tables, packageName , entity, repository, framework);
         generateAllController(path, tables, packageName, entity, controller, repository, framework);
+        generateAuthentificationClass(path,packageName,framework);
         generateViewService(viewPath, viewType);
         generateAllView(viewPath, tables, view, viewType, url);
         generatePaginationClasses(path,packageName,framework);
+        generateUserDTO(path,packageName,framework);
     }
 
     private void generateViewService(String path, String viewType) {
@@ -359,6 +374,28 @@ public class CodeGenerator {
             IonicProjectCreator.generateIonicService(path,this.getViewDetails().getViews().get(viewType).getServiceFileName(),tempPath);
         }
     }
+    private void generateUserDTO(String path,String packageName, String lang) throws Exception {
+        String[] splittedLang = lang.split(":");
+        String framework = splittedLang[1];
+        String language = splittedLang[0];
+        String directory=packageName.replace(".", File.separator)+ File.separator+"entity";
+        String directoryPath=path+directory;
+        LanguageProperties languageProperties = getLanguageDetails().getLanguages().get(language);
+        this.setFrameworkProperties(this.getLanguageDetails().getLanguages().get(language).getFrameworks().get(framework));
+        String template = (getFrameworkProperties().getTemplate());
+        template=template
+                .replace("#package#","namespace com.district.test.entity;")
+                .replace("#imports#","")
+                .replace("#class#","public class UserDto")
+                .replace("#open-bracket#","{")
+                .replace("#close-bracket#","}")
+                .replace("#fields#","public required string UserName { get; set; }\n   public required string Password { get; set; }")
+                .replace("#methods#","")
+                .replace("#constructors#","")
+                .replace("#encapsulation#","");
+        FileUtility.generateFile(directoryPath, GeneratorService.getFileName("UserDto", languageProperties.getExtension()), template);
+        System.out.println("package name : "+ packageName);
+    }
 
     public static void main(String[] args) throws Exception {
         CodeGenerator codeGenerator = new CodeGenerator();
@@ -366,7 +403,6 @@ public class CodeGenerator {
 
         String packageName="test.newT";
         String lang="csharp:dotnet";
-        codeGenerator.generatePaginationClasses(path,packageName,lang);
-
+        codeGenerator.generateUserDTO(path,packageName,lang);
     }
 }

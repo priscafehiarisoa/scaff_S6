@@ -45,8 +45,12 @@ public class Test {
             String[] tables = DbService.getAllTablesArrays(codeGenerator.getDbConnection());
 //             for(String table: tables)
 //                 System.out.println(table);
+
             codeGenerator.generateAll(path,viewPath, packageName, entity, controller, repository, view, viewType, url, tables, framework);
+
             // codeGenerator.generateEntity(path, "car", packageName+".entity", framework);
+
+//            System.out.println(codeGenerator.getFrameworkProperties().getAuthentificationTemplate());
         }catch(Exception e){
             e.printStackTrace();
         }finally{

@@ -40,6 +40,17 @@ public class ObjectUtility {
         res += temp.substring(i, temp.length());
         return capitalize(res);
     }
+    public static String addSpaceBeforeUppercase(String input) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < input.length(); i++) {
+            char c = input.charAt(i);
+            if (Character.isUpperCase(c) && i != 0) {
+                sb.append(' '); // Add a space before the uppercase character
+            }
+            sb.append(c); // Append the character itself
+        }
+        return sb.toString();
+    }
 
     public static String formatToCamelCase(String str){
         String[] splited = str.split("_");

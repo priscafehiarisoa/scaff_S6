@@ -4,8 +4,10 @@ import java.util.*;
 
 import ambovombe.kombarika.configuration.mapping.*;
 import ambovombe.kombarika.database.DbConnection;
+import ambovombe.kombarika.generator.CodeGenerator;
 import ambovombe.kombarika.generator.service.DbService;
 import ambovombe.kombarika.generator.service.GeneratorService;
+import ambovombe.kombarika.generator.service.controller.Controller;
 import ambovombe.kombarika.generator.utils.ObjectUtility;
 import ambovombe.kombarika.utils.Misc;
 import lombok.Getter;
@@ -162,12 +164,22 @@ public class Entity {
                 .replace("#constructors#", getConstructor(table))
                 .replace("#methods#", getToStringMethod(table,columns))
                 .replace("#encapsulation#", getEncapsulation(columns, foreignKeys));
-        System.out.println("]][[]][[=> "+getEntityField(columns, foreignKeys, primaryKeyColumn));
         return res;
     }
 
     public String getFileName(String table){
         return ObjectUtility.capitalize(ObjectUtility.formatToCamelCase(table)).concat("." + this.getLanguageProperties().getExtension());
+    }
+
+    public static void main(String[] args) throws Exception {
+        CodeGenerator codeGenerator=new CodeGenerator();
+//        HashMap<String, String> foreignKeys = DbService.getForeignKeys(codeGenerator.getDbConnection(), "inscription");
+//        for (Map.Entry<String, String> entry : foreignKeys.entrySet()) {
+//            String key = entry.getKey();
+//            String value = entry.getValue();
+//            System.out.println("Key: " + key + ", Value: " + value);
+//        }
+        System.out.println(Controller.inputs_dotnet("semestrematiere", codeGenerator.getDbConnection()));
     }
 
 }

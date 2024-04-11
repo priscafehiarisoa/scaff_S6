@@ -32,4 +32,11 @@ export class GenerateService {
   getAllPaginated(link: string, pageNumber : number, pageSize : number){
      return this.http.get(`${BASE_URL}${link}/pagination?PageNumber=${pageNumber}&PageSize=${pageSize}`,{observe:"response"})
    }
+   register(link: string, requestBody: any) {
+       return this.http.post(`${BASE_URL}Auth/${link}`, requestBody);
+     }
+
+     login (link: string, requestBody: any) {
+       return this.http.post(`${BASE_URL}Auth/${link}`, requestBody);
+     }
 }

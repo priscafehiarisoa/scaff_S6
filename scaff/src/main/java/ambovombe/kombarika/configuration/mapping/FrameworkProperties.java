@@ -13,6 +13,7 @@ public class FrameworkProperties {
     String template;
     String pageList;
     String pageparameters;
+    String authTemplate;
     String repository;
     boolean isOneRepository;
     Imports imports;
@@ -29,7 +30,6 @@ public class FrameworkProperties {
     }
 
     public String getPageListTemplate(){
-        System.out.println("template location : "+Misc.getSourceTemplateLocation() );
         return Misc.getSourceTemplateLocation() + File.separator + this.pageList;
     }
     public String getPageParamTemplate(){
@@ -50,10 +50,25 @@ public class FrameworkProperties {
         return this.template;
     }
 
+    public String getAuthTemplate() {
+         return Misc.getSourceTemplateLocation() + File.separator + this.authTemplate;
+    }
+
+    public String getAuthentificationTemplate(){
+        String temp="";
+        String path = getAuthTemplate();
+        try {
+            temp=(FileUtility.readOneFile(path));
+        } catch (Exception e) {
+            e.printStackTrace(System.out);
+            throw new RuntimeException(e);
+        }
+        return temp;
+    }
+
     public String getPageListTemp() {
         String temp="";
             String path = getPageListTemplate();
-            System.out.println("plpl : "+path);
             try {
                 temp=(FileUtility.readOneFile(path));
             } catch (Exception e) {
@@ -91,4 +106,5 @@ public class FrameworkProperties {
                 ", init=" + init +
                 '}';
     }
+
 }

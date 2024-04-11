@@ -4,6 +4,7 @@ import ambovombe.kombarika.configuration.mapping.LanguageProperties;
 import ambovombe.kombarika.configuration.mapping.*;
 import ambovombe.kombarika.database.DbConnection;
 import ambovombe.kombarika.generator.CodeGenerator;
+import ambovombe.kombarika.generator.service.DbService;
 import ambovombe.kombarika.generator.service.GeneratorService;
 import ambovombe.kombarika.generator.utils.ObjectUtility;
 import ambovombe.kombarika.utils.Misc;
@@ -14,6 +15,8 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
 
 @Getter @Setter
 public class Controller{
@@ -131,13 +134,29 @@ public class Controller{
         System.out.println("=func="+function);
         return Misc.tabulate(this.getLanguageProperties().getAnnotationSyntax().replace("?", this.getControllerProperty().getDelete()) + "\n" + function);
     }
-    public String findAllPagination(String table){
+
+    public static String inputs_dotnet (String table, DbConnection dbConnection) throws Exception {
+        HashMap<String, String> foreignKeys = DbService.getForeignKeys(dbConnection, table);
+        int i=0;
+        String response="";
+        for (Map.Entry<String, String> entry : foreignKeys.entrySet()) {
+            String value = entry.getValue();
+                response+=".Include(i=>i."+value+")";
+
+        }
+        return response;
+    }
+    public String findAllPagination(String table) throws Exception {
+        CodeGenerator codeGenerator=new CodeGenerator();
         String body = "";
-        body+=Misc.tabulate(this.getControllerProperty().getPaginationMethod()).replace("?",ObjectUtility.capitalize(ObjectUtility.formatToCamelCase(table)));
+        body+=Misc.tabulate(this.getControllerProperty().getPaginationMethod())
+                .replace("?",ObjectUtility.capitalize(ObjectUtility.formatToCamelCase(table)))
+                .replace("#inc#",Controller.inputs_dotnet(table, codeGenerator.getDbConnection()));
         return body;
     }
 
-    public String findAll(String table){
+    public String findAll(String table) throws Exception {
+        CodeGenerator codeGenerator=new CodeGenerator();
         String body = "";
         body += Misc.tabulate(this.getCrudMethod().getFindAll()
             .replace("#object#", ObjectUtility.formatToCamelCase(table))
@@ -146,7 +165,9 @@ public class Controller{
                 .replace("#name#", "findAll")
                 .replace("#type#", this.getControllerProperty().getReturnType().replace("?", this.getLanguageProperties().getListSyntax().replace("?",ObjectUtility.capitalize(ObjectUtility.formatToCamelCase(table)))))
                 .replace("#arg#", "")
-                .replace("#body#", body);
+                .replace("#body#", body)
+                .replace("#inc#",Controller.inputs_dotnet(table, codeGenerator.getDbConnection()))
+                ;
         return Misc.tabulate(this.getLanguageProperties().getAnnotationSyntax().replace("?", this.getControllerProperty().getGet()) + "\n" + function);
     }
 
