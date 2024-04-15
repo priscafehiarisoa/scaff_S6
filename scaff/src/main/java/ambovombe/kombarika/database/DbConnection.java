@@ -6,6 +6,8 @@ package ambovombe.kombarika.database;
 
 import ambovombe.kombarika.utils.Misc;
 import ambovombe.kombarika.generator.parser.JsonUtility;
+import com.google.gson.JsonObject;
+import com.google.gson.stream.JsonReader;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -39,6 +41,8 @@ public class DbConnection {
     //METHODS
     public void read()throws Exception{
         String separator = File.separator;
+
+//
         String confFile = Misc.getConnectionConfLocation() + separator + getConfPath();
         DbConnection temp = JsonUtility.parseJson(confFile, this.getClass());
         this.setListConnection(temp.getListConnection());
@@ -55,6 +59,7 @@ public class DbConnection {
     public Connection createConnection(String connection)throws Exception{
         if(!isInit()) init();
         DbProperties prop = this.getListConnection().get(connection);
+        System.out.println("connexion"+prop);
         return prop.connect();
     }
 
@@ -118,4 +123,14 @@ public class DbConnection {
         getConnection().commit();
     }
 
+    @Override
+    public String toString() {
+        return "DbConnection{" +
+                "defaultConnection='" + defaultConnection + '\'' +
+                ", inUseConnection='" + inUseConnection + '\'' +
+                ", init=" + init +
+                ", connection=" + connection +
+                ", listConnection=" + listConnection +
+                '}';
+    }
 }

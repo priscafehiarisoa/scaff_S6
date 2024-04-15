@@ -5,8 +5,13 @@ package ambovombe.kombarika;
  */
 
 import ambovombe.kombarika.generator.CodeGenerator;
+import ambovombe.kombarika.generator.IonicProjectCreator;
 import ambovombe.kombarika.generator.service.DbService;
+import ambovombe.kombarika.utils.Misc;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.sql.SQLException;
 import java.util.HashMap;
 
@@ -18,7 +23,6 @@ public class Test {
      */
 
     public static void main(String[] args) throws Exception {
-        CodeGenerator codeGenerator = new CodeGenerator();
         String path = "/Users/priscafehiarisoadama/RiderProjects/WebApplication5/WebApplication5/";
 //        String path = "./";
         String framework = "csharp:dotnet";
@@ -28,10 +32,39 @@ public class Test {
         String repository = "repository";
         String view = "viewTest";
         String viewType = "angular-ionic";
+
 //        String viewPath="/Users/priscafehiarisoadama/IdeaProjects/learnIonicAngular/reciclica-app";
 //        String viewPath="./";
         String viewPath="/Users/priscafehiarisoadama/IdeaProjects/learnIonicAngular/reciclica-app";
         String url = "http://localhost:8080/";
+        String separator = File.separator;
+        String confFile = Misc.getConnectionConfLocation() + separator + "database.json";
+        System.out.println("conffile:"+confFile);
+        String smt = "{\n" +
+                "    \"defaultConnection\" : \"DefaultConnection\",\n" +
+                "    \"listConnection\": {\n" +
+                "        \"DefaultConnection\": {\n" +
+                "            \"datasource\":\"jdbc:postgresql://localhost:5432/"+args[7]+"\",\n" +
+                "            \"username\":\""+args[5]+"\",\n" +
+                "            \"password\":\""+args[6]+" \",\n" +
+                "            \"databaseType\":\"POSTGRESQL\"\n" +
+                "        },\n" +
+                "        \"OtherConnection\": {\n" +
+                "            \"datasource\":\"jdbc:postgresql://localhost:5432/"+args[7]+"\",\n" +
+                "            \"username\":\""+args[5]+"\",\n" +
+                "            \"password\":\""+args[6]+"\",\n" +
+                "            \"databaseType\":\"POSTGRESQL\"\n" +
+                "        }\n" +
+                "    }\n" +
+                "}\n";
+
+
+//        code jeddy
+        IonicProjectCreator.clearFileContent(confFile);
+        IonicProjectCreator.writeToFile(confFile,smt);
+//        code jeddy fin
+        CodeGenerator codeGenerator = new CodeGenerator();
+
         try{
             // String[] tables = {"district","region"};
             // DbConnection dbConnection = codeGenerator.getDbConnection();

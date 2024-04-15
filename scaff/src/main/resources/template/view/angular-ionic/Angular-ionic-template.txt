@@ -1,5 +1,5 @@
 import {Component, inject, OnInit, ViewChild} from '@angular/core';
-import {InfiniteScrollCustomEvent, IonModal} from "@ionic/angular";
+import {InfiniteScrollCustomEvent, IonModal, NavController} from "@ionic/angular";
 import { OverlayEventDetail } from '@ionic/core/components';
 import {ActivatedRoute} from "@angular/router";
 import {GenerateService} from "../generate.service";
@@ -166,11 +166,14 @@ export class #entity#Page implements OnInit {
 
 #values#
 
-  constructor() {
+  constructor(public navCtrl: NavController) {
 
   }
 
   ngOnInit() {
+    if(localStorage.getItem("token")==null){
+        this.navCtrl.navigateForward('/login');
+      }
     this.folder = this.activatedRoute.snapshot.paramMap.get('id') as string;
     this.loadItems(this.folder);
     console.log("on init")

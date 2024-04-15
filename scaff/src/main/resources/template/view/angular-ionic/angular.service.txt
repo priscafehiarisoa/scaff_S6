@@ -37,6 +37,6 @@ export class GenerateService {
      }
 
      login (link: string, requestBody: any) {
-       return this.http.post(`${BASE_URL}Auth/${link}`, requestBody);
+    return this.http.post(`${BASE_URL}Auth/${link}`, requestBody, {observe:"response"});
      }
 }

@@ -72,4 +72,15 @@ public class DbProperties {
         Connection con = DriverManager.getConnection(this.getDatasource(),this.getUsername(),this.getPassword());
         return con;
     }
+
+    @Override
+    public String toString() {
+        return "DbProperties{" +
+                "database='" + database + '\'' +
+                ", datasource='" + datasource + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", databaseType=" + databaseType +
+                '}';
+    }
 }

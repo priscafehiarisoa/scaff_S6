@@ -119,6 +119,9 @@ public class View {
         String res ="";
         String template = this.getViewProperties().getTableHeader();
         for (Map.Entry<String, String> set : columns.entrySet()) {
+            if(set.getKey().equals("password")){
+                continue;
+            }
             res += "\t\t" + template
             .replace("#label#", ObjectUtility.formatToSpacedString(set.getKey()).replace("_"," ")) + "\n";
         }
@@ -140,6 +143,9 @@ public class View {
                 System.out.println(res);
                 i++;
             }else{
+                if(set.getKey().contains("password")){
+                    continue;
+                }
                 res += "\t\t" + template
                 .replace("#values#", ObjectUtility.formatToCamelCase(set.getKey())) + "\n";
             }

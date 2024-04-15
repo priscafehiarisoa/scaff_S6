@@ -4,7 +4,7 @@
         "DefaultConnection": {
             "datasource":"jdbc:postgresql://localhost:5432/etudiantitu",
             "username":"priscafehiarisoadama",
-            "password":"",
+            "password":" ",
             "databaseType":"POSTGRESQL"
         },
         "OtherConnection": {
