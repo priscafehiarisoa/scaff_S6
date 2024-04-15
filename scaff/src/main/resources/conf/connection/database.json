@@ -2,15 +2,15 @@
     "defaultConnection" : "DefaultConnection",
     "listConnection": {
         "DefaultConnection": {
-            "datasource":"jdbc:postgresql://localhost:5432/etudiantitu",
-            "username":"priscafehiarisoadama",
-            "password":"",
+            "datasource":"jdbc:postgresql://localhost:5432/#database#",
+            "username":"#username#",
+            "password":"#pass#",
             "databaseType":"POSTGRESQL"
         },
         "OtherConnection": {
-            "datasource":"jdbc:postgresql://localhost:5432/etudiantitu",
-            "username":"priscafehiarisoadama",
-            "password":"",
+            "datasource":"jdbc:postgresql://localhost:5432/#database#",
+            "username":"#username#",
+            "password":"#pass#",
             "databaseType":"POSTGRESQL"
         }
     }

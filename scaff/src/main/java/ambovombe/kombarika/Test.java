@@ -32,62 +32,32 @@ public class Test {
         String repository = "repository";
         String view = "viewTest";
         String viewType = "angular-ionic";
-
-//        String viewPath="/Users/priscafehiarisoadama/IdeaProjects/learnIonicAngular/reciclica-app";
-//        String viewPath="./";
         String viewPath="/Users/priscafehiarisoadama/IdeaProjects/learnIonicAngular/reciclica-app";
         String url = "http://localhost:8080/";
         String separator = File.separator;
         String confFile = Misc.getConnectionConfLocation() + separator + "database.json";
-        System.out.println("conffile:"+confFile);
-        String smt = "{\n" +
-                "    \"defaultConnection\" : \"DefaultConnection\",\n" +
-                "    \"listConnection\": {\n" +
-                "        \"DefaultConnection\": {\n" +
-                "            \"datasource\":\"jdbc:postgresql://localhost:5432/"+args[7]+"\",\n" +
-                "            \"username\":\""+args[5]+"\",\n" +
-                "            \"password\":\""+args[6]+" \",\n" +
-                "            \"databaseType\":\"POSTGRESQL\"\n" +
-                "        },\n" +
-                "        \"OtherConnection\": {\n" +
-                "            \"datasource\":\"jdbc:postgresql://localhost:5432/"+args[7]+"\",\n" +
-                "            \"username\":\""+args[5]+"\",\n" +
-                "            \"password\":\""+args[6]+"\",\n" +
-                "            \"databaseType\":\"POSTGRESQL\"\n" +
-                "        }\n" +
-                "    }\n" +
-                "}\n";
 
-
+        String confDatabaseJson=IonicProjectCreator.readFileToString(confFile);
+        confDatabaseJson=Test.setupDatabase(confDatabaseJson,args[5],args[6],args[7]);
 //        code jeddy
         IonicProjectCreator.clearFileContent(confFile);
-        IonicProjectCreator.writeToFile(confFile,smt);
+        IonicProjectCreator.writeToFile(confFile,confDatabaseJson);
 //        code jeddy fin
         CodeGenerator codeGenerator = new CodeGenerator();
 
         try{
-            // String[] tables = {"district","region"};
-            // DbConnection dbConnection = codeGenerator.getDbConnection();
-            // String str = dbConnection.getListConnection().get(dbConnection.getInUseConnection()).getDatabaseType().getForeignKeyQuery();
-            // str = str.replace("?", "commune");
-            // System.out.println(str);
-            // HashMap<String, String> foreignKeys = DbService.getForeignKeys(dbConnection, "commune");
-            // for (Map.Entry<String, String> set : foreignKeys.entrySet()) {
-            //     System.out.println(set.getKey() + " " + set.getValue());
-            // }
-            String[] tables = DbService.getAllTablesArrays(codeGenerator.getDbConnection());
-//             for(String table: tables)
-//                 System.out.println(table);
 
+            String[] tables = DbService.getAllTablesArrays(codeGenerator.getDbConnection());
             codeGenerator.generateAll(path,viewPath, packageName, entity, controller, repository, view, viewType, url, tables, framework);
 
-            // codeGenerator.generateEntity(path, "car", packageName+".entity", framework);
-
-//            System.out.println(codeGenerator.getFrameworkProperties().getAuthentificationTemplate());
-        }catch(Exception e){
+          }catch(Exception e){
             e.printStackTrace();
         }finally{
             codeGenerator.getDbConnection().close();
         }
+    }
+
+    public static String setupDatabase(String config,String username,String password,String database){
+        return config.replace("#database#",database).replace("#username#",username).replace("#pass#",password);
     }
 }
