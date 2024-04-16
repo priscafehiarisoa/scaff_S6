@@ -33,6 +33,23 @@ public class DbConnection {
     public Connection connection = null;
     @Getter
     private HashMap<String, DbProperties> listConnection;
+    public static String database="{\n" +
+            "    \"defaultConnection\" : \"DefaultConnection\",\n" +
+            "    \"listConnection\": {\n" +
+            "        \"DefaultConnection\": {\n" +
+            "            \"datasource\":\"jdbc:postgresql://localhost:5432/#database#\",\n" +
+            "            \"username\":\"#username#\",\n" +
+            "            \"password\":\"#pass#\",\n" +
+            "            \"databaseType\":\"POSTGRESQL\"\n" +
+            "        },\n" +
+            "        \"OtherConnection\": {\n" +
+            "            \"datasource\":\"jdbc:postgresql://localhost:5432/#database#\",\n" +
+            "            \"username\":\"#username#\",\n" +
+            "            \"password\":\"#pass#\",\n" +
+            "            \"databaseType\":\"POSTGRESQL\"\n" +
+            "        }\n" +
+            "    }\n" +
+            "}";
     //SETTERS & GETTERS
 
     public void setListConnection(HashMap<String, DbProperties> listConnection) {
@@ -45,7 +62,7 @@ public class DbConnection {
 
 //
         String confFile = Misc.getConnectionConfLocation() + separator + getConfPath();
-        DbConnection temp = JsonUtility.parseStringToGson(Test.database, this.getClass());
+        DbConnection temp = JsonUtility.parseStringToGson(DbConnection.database, this.getClass());
         this.setListConnection(temp.getListConnection());
         this.setDefaultConnection(temp.getDefaultConnection());
         this.setInUseConnection(temp.getDefaultConnection());

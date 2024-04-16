@@ -4,6 +4,7 @@ package ambovombe.kombarika;
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Main.java to edit this template
  */
 
+import ambovombe.kombarika.database.DbConnection;
 import ambovombe.kombarika.generator.CodeGenerator;
 import ambovombe.kombarika.generator.IonicProjectCreator;
 import ambovombe.kombarika.generator.service.DbService;
@@ -17,23 +18,7 @@ import java.util.HashMap;
 
 public class Test {
 
-    public static String database="{\n" +
-            "    \"defaultConnection\" : \"DefaultConnection\",\n" +
-            "    \"listConnection\": {\n" +
-            "        \"DefaultConnection\": {\n" +
-            "            \"datasource\":\"jdbc:postgresql://localhost:5432/#database#\",\n" +
-            "            \"username\":\"#username#\",\n" +
-            "            \"password\":\"#pass#\",\n" +
-            "            \"databaseType\":\"POSTGRESQL\"\n" +
-            "        },\n" +
-            "        \"OtherConnection\": {\n" +
-            "            \"datasource\":\"jdbc:postgresql://localhost:5432/#database#\",\n" +
-            "            \"username\":\"#username#\",\n" +
-            "            \"password\":\"#pass#\",\n" +
-            "            \"databaseType\":\"POSTGRESQL\"\n" +
-            "        }\n" +
-            "    }\n" +
-            "}";
+
 
     /**
      * @param args the command line arguments
@@ -59,7 +44,7 @@ public class Test {
 //        String confFile = Misc.getConnectionConfLocation() + separator + "database.json";
 
 //        String confDatabaseJson=IonicProjectCreator.readFileToString(confFile);
-        Test.database=Test.setupDatabase(Test.database,args[5],args[6],args[7]);
+        DbConnection.database=Test.setupDatabase(DbConnection.database,args[5],args[6],args[7]);
 //        code jeddy
 //        IonicProjectCreator.clearFileContent(confFile);
 //        IonicProjectCreator.writeToFile(confFile,confDatabaseJson);
