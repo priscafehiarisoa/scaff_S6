@@ -1,5 +1,5 @@
 import {inject, Injectable} from '@angular/core';
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 
 // generate
 const BASE_URL = 'http://localhost:5099/api/';
@@ -9,25 +9,50 @@ const BASE_URL = 'http://localhost:5099/api/';
 })
 export class GenerateService {
   private http= inject(HttpClient)
-  //geerate
+  headersJson = {
+    'Content-Type': 'application/json',
+    Authorization:""
+  };
+  httpOptions = {
+    headers: new HttpHeaders(this.headersJson),
+    observe: 'response' as 'body'
+  };
 
-  constructor() { }
+  constructor() {
+    if(localStorage.getItem("token")!=null){
+      this.headersJson.Authorization='Bearer '+localStorage.getItem("token");
+    }
+  }
+
   //
   getAll(link: string) {
+
     return this.http.get(`${BASE_URL}${link}`);
   }
 
   create(link: string, requestBody: any) {
-    return this.http.post(`${BASE_URL}${link}`, requestBody);
+    if(localStorage.getItem("token")!=null){
+      this.headersJson.Authorization='Bearer '+localStorage.getItem("token");
+    }
+    return this.http.post(`${BASE_URL}${link}`, requestBody,this.httpOptions);
   }
 
   update(link: string, requestBody: any) {
+    if(localStorage.getItem("token")!=null){
+      console.log("okay")
+      this.headersJson.Authorization='Bearer '+localStorage.getItem("token");
+    }
+    console.log("header : "+this.httpOptions)
 
-    return this.http.put(`${BASE_URL}${link}`, requestBody);
+    return this.http.put(`${BASE_URL}${link}`, requestBody,this.httpOptions);
   }
 
   delete(link: string, idObject: string) {
-    return this.http.delete(`${BASE_URL}${link}/${idObject}`);
+    if(localStorage.getItem("token")!=null){
+
+      this.headersJson.Authorization='Bearer '+localStorage.getItem("token");
+    }
+    return this.http.delete(`${BASE_URL}${link}/${idObject}`,this.httpOptions);
   }
   getAllPaginated(link: string, pageNumber : number, pageSize : number){
      return this.http.get(`${BASE_URL}${link}/pagination?PageNumber=${pageNumber}&PageSize=${pageSize}`,{observe:"response"})

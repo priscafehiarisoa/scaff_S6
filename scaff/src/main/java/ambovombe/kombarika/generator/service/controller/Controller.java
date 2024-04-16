@@ -251,7 +251,7 @@ public class Controller{
         return res;
     }
 
-    public String generateController(String template, String table, String packageName, String repository, String entity, String framework,String pagination) throws Exception {
+    public String generateController(String template, String table, String packageName, String repository, String entity, String framework,String pagination,String role) throws Exception {
         String res = template.replace("#package#", GeneratorService.getPackage(this.getLanguageProperties(), packageName))
                 .replace("#imports#", getControllerImport(repository, entity, table,pagination))
                 .replace("#class#", getControllerClass(table, framework))
@@ -259,7 +259,7 @@ public class Controller{
                 .replace("#close-bracket#", languageProperties.getCloseBracket())
                 .replace("#fields#", getControllerField(table))
                 .replace("#constructors#", getConstructor(table))
-                .replace("#methods#", getCrudMethods(table))
+                .replace("#methods#", getCrudMethods(table).replace("#auth#",role))
                 .replace("#encapsulation#", "");
         return res;
     }

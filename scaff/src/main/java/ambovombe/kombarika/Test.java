@@ -17,6 +17,24 @@ import java.util.HashMap;
 
 public class Test {
 
+    public static String database="{\n" +
+            "    \"defaultConnection\" : \"DefaultConnection\",\n" +
+            "    \"listConnection\": {\n" +
+            "        \"DefaultConnection\": {\n" +
+            "            \"datasource\":\"jdbc:postgresql://localhost:5432/#database#\",\n" +
+            "            \"username\":\"#username#\",\n" +
+            "            \"password\":\"#pass#\",\n" +
+            "            \"databaseType\":\"POSTGRESQL\"\n" +
+            "        },\n" +
+            "        \"OtherConnection\": {\n" +
+            "            \"datasource\":\"jdbc:postgresql://localhost:5432/#database#\",\n" +
+            "            \"username\":\"#username#\",\n" +
+            "            \"password\":\"#pass#\",\n" +
+            "            \"databaseType\":\"POSTGRESQL\"\n" +
+            "        }\n" +
+            "    }\n" +
+            "}";
+
     /**
      * @param args the command line arguments
      * @throws SQLException
@@ -34,21 +52,24 @@ public class Test {
         String viewType = "angular-ionic";
         String viewPath="/Users/priscafehiarisoadama/IdeaProjects/learnIonicAngular/reciclica-app";
         String url = "http://localhost:8080/";
-        String separator = File.separator;
-        String confFile = Misc.getConnectionConfLocation() + separator + "database.json";
+        System.out.println(args[8]);
 
-        String confDatabaseJson=IonicProjectCreator.readFileToString(confFile);
-        confDatabaseJson=Test.setupDatabase(confDatabaseJson,args[5],args[6],args[7]);
+        String role=args[8];
+        String separator = File.separator;
+//        String confFile = Misc.getConnectionConfLocation() + separator + "database.json";
+
+//        String confDatabaseJson=IonicProjectCreator.readFileToString(confFile);
+        Test.database=Test.setupDatabase(Test.database,args[5],args[6],args[7]);
 //        code jeddy
-        IonicProjectCreator.clearFileContent(confFile);
-        IonicProjectCreator.writeToFile(confFile,confDatabaseJson);
+//        IonicProjectCreator.clearFileContent(confFile);
+//        IonicProjectCreator.writeToFile(confFile,confDatabaseJson);
 //        code jeddy fin
         CodeGenerator codeGenerator = new CodeGenerator();
 
         try{
 
             String[] tables = DbService.getAllTablesArrays(codeGenerator.getDbConnection());
-            codeGenerator.generateAll(path,viewPath, packageName, entity, controller, repository, view, viewType, url, tables, framework);
+            codeGenerator.generateAll(path,viewPath, packageName, entity, controller, repository, view, viewType, url, tables, framework,role);
 
           }catch(Exception e){
             e.printStackTrace();

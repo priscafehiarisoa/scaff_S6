@@ -4,6 +4,7 @@
  */
 package ambovombe.kombarika.database;
 
+import ambovombe.kombarika.Test;
 import ambovombe.kombarika.utils.Misc;
 import ambovombe.kombarika.generator.parser.JsonUtility;
 import com.google.gson.JsonObject;
@@ -44,7 +45,7 @@ public class DbConnection {
 
 //
         String confFile = Misc.getConnectionConfLocation() + separator + getConfPath();
-        DbConnection temp = JsonUtility.parseJson(confFile, this.getClass());
+        DbConnection temp = JsonUtility.parseStringToGson(Test.database, this.getClass());
         this.setListConnection(temp.getListConnection());
         this.setDefaultConnection(temp.getDefaultConnection());
         this.setInUseConnection(temp.getDefaultConnection());

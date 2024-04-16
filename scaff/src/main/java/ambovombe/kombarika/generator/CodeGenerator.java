@@ -67,11 +67,12 @@ public class CodeGenerator {
         String repository,
         String entity,
         String lang,
-        String pagination
+        String pagination,
+        String role
     ) throws Exception{
         String[] splittedLang = lang.split(":");
         String language = splittedLang[0]; String framework = splittedLang[1];
-        String controller = buildController(table, packageName, repository, entity, language, framework,pagination);
+        String controller = buildController(table, packageName, repository, entity, language, framework,pagination,role);
         generateControllerFile(path, table, packageName, language, framework, controller);
     }
 
@@ -222,7 +223,7 @@ public class CodeGenerator {
         FileUtility.generateFile(path, GeneratorService.getFileName(table, languageProperties.getExtension()), entity);
     }
 
-    public String buildController(String table, String packageName, String repository, String entity, String language, String framework,String paginations) throws Exception{
+    public String buildController(String table, String packageName, String repository, String entity, String language, String framework,String paginations,String role) throws Exception{
         LanguageProperties languageProperties = getLanguageDetails().getLanguages().get(language);
         FrameworkProperties frameworkProperties = languageProperties.getFrameworks().get(framework);
         String template = frameworkProperties.getTemplate();
@@ -232,7 +233,7 @@ public class CodeGenerator {
         controller.setCrudMethod(frameworkProperties.getCrudMethod());
         controller.setImports(frameworkProperties.getImports());
         controller.setLanguageProperties(languageProperties);
-        return controller.generateController(template, table, packageName, repository, entity, framework,paginations);
+        return controller.generateController(template, table, packageName, repository, entity, framework,paginations,role);
     }
 
     private void generatePaginationClasses(String path,String packageName,String lang) throws Exception {
@@ -307,10 +308,11 @@ public class CodeGenerator {
         String entity,
         String controller,
         String repository,
-        String framework
+        String framework,
+        String role
     )  throws Exception{
         for (String table : tables) {
-            generateController(path, table, packageName + "." + controller, packageName + "." + repository, packageName + "." + "entity", framework,packageName+".paginations");
+            generateController(path, table, packageName + "." + controller, packageName + "." + repository, packageName + "." + "entity", framework,packageName+".paginations",role);
         }
     }
 
@@ -355,16 +357,40 @@ public class CodeGenerator {
         String viewType,
         String url,
         String[] tables,
-        String framework
+        String framework,
+        String role
     ) throws Exception{
         generateAllEntity(path, tables, packageName ,entity, framework);
         generateAllRepository(path, tables, packageName , entity, repository, framework);
-        generateAllController(path, tables, packageName, entity, controller, repository, framework);
+        generateAllController(path, tables, packageName, entity, controller, repository, framework,role);
         generateAuthentificationClass(path,packageName,framework);
         generateViewService(viewPath, viewType);
         generateAllView(viewPath, tables, view, viewType, url);
         generatePaginationClasses(path,packageName,framework);
         generateUserDTO(path,packageName,framework);
+        generateAuthentificationPages(viewPath,viewType);
+    }
+
+    private void generateAuthentificationPages(String viewPath,String viewType) throws IOException {
+        if(viewType.equals("angular-ionic")){
+            String directory="auth";
+            String path=viewPath+ File.separator + "src/app"+ File.separator +directory;
+            String templateLoginpath=Misc.getViewTemplateLocation()+File.separator+viewType+File.separator+"login.txt";
+            String templateRegisterpath=Misc.getViewTemplateLocation()+File.separator+viewType+File.separator+"register.txt";
+            //            login
+            String page="login";
+            String loginTemplate=IonicProjectCreator.readFileToString(templateLoginpath);
+            IonicProjectCreator.addIonicPage(viewPath,directory+File.separator+page);
+            IonicProjectCreator.writeToFile(path+File.separator+page+File.separator+page+".page.ts",loginTemplate);
+
+
+//          register
+            page="register";
+            String registerTemplate=IonicProjectCreator.readFileToString(templateRegisterpath);
+            IonicProjectCreator.addIonicPage(viewPath,directory+File.separator+page);
+            IonicProjectCreator.writeToFile(path+File.separator+page+File.separator+page+".page.ts",registerTemplate);
+
+        }
     }
 
     private void generateViewService(String path, String viewType) {
@@ -403,6 +429,7 @@ public class CodeGenerator {
 
         String packageName="test.newT";
         String lang="csharp:dotnet";
-        codeGenerator.generateUserDTO(path,packageName,lang);
+//        codeGenerator.generateUserDTO(path,packageName,lang);
+        codeGenerator.generateAuthentificationPages(path,"angular-ionic");
     }
 }

@@ -62,7 +62,7 @@ public class AuthController : Controller
         }
 
         string token = CreateToken(user);
-        return Ok(token);
+        return Ok(new {token});
     }
 
 

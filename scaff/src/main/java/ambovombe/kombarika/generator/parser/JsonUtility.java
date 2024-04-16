@@ -21,6 +21,10 @@ public class JsonUtility {
         Object temp = new Gson().fromJson(reader, objectClass);
         return (T)temp;
     }
+    public static <T> T parseStringToGson(String json,Class <?> objectClass){
+        Object temp = new Gson().fromJson(json, objectClass);
+        return (T)temp;
+    }
 
     public static String encodeJson(Object object) throws Exception{
         return new Gson().toJson(object);

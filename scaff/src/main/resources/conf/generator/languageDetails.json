@@ -32,7 +32,8 @@
                             "packageName",
                             "entity",
                             "paginations",
-                            "Microsoft.EntityFrameworkCore"
+                            "Microsoft.EntityFrameworkCore",
+                            "Microsoft.AspNetCore.Authorization"
                         ],
                         "entity":[
                             "System.ComponentModel.DataAnnotations",
@@ -70,10 +71,10 @@
                     "controllerProperty" : {
                         "path": "Route(\"api/?\")",
                         "get": "HttpGet",
-                        "post": "HttpPost",
-                        "put": "HttpPut",
+                        "post": "HttpPost , Authorize(Roles = \"#auth#\")",
+                        "put": "HttpPut , Authorize(Roles = \"#auth#\")",
                         "pathSyntax":"[?]",
-                        "delete": "HttpDelete(\"{id}\")",
+                        "delete": "HttpDelete(\"{id}\") , Authorize(Roles = \"#auth#\")",
                         "classSyntax": "?Controller : Controller",
                         "returnType": "ActionResult<?>",
                         "field": "private readonly RepositoryDbContext _context;\n\tprivate readonly ILogger<?Controller> _logger;",
