@@ -1,0 +1,88 @@
+import {Component, inject, OnInit, ViewChild} from '@angular/core';
+import {IonModal, MenuController} from "@ionic/angular";
+import { OverlayEventDetail } from '@ionic/core/components';
+import {ActivatedRoute} from "@angular/router";
+import {GenerateService} from "../../generate.service";
+
+@Component({
+  selector: 'app-register',
+  template:`
+
+  <ion-content [fullscreen]="true">
+<!---->
+    <div class="" style="width: 30%; min-width: 468px ; margin:15% auto; " >
+      <div class="header">
+        <ion-title class="title ion-text-center" size="large" style="margin: 5%" >Register Page</ion-title>
+      </div>
+      <form #myForms="ngForm"  novalidate>
+        <div class="ion-padding">
+
+          <ion-item class="ion-margin" >
+            <ion-input type="text" label="Nom" name="userName" [(ngModel)]="formdata.userName"></ion-input>
+            <ion-icon name="person-outline"></ion-icon>
+
+          </ion-item>
+
+          <ion-item class="ion-margin" >
+            <ion-input type="password"   label="mot de passe"  name="password" [(ngModel)]="formdata.password"></ion-input>
+            <ion-icon name="lock-closed-outline"></ion-icon>
+          </ion-item>
+          <ion-item class="ion-margin" >
+            <ion-input type="text"  label="role" name="role" [(ngModel)]="formdata.role"></ion-input>
+            <ion-icon name="lock-closed-outline"></ion-icon>
+          </ion-item>
+
+
+          <ion-button style="" class="ion-margin " type="submit" (click)="create()" >
+            <ion-icon name="chevron-forward"></ion-icon>
+          </ion-button>
+        </div>
+      </form>
+    </div>
+
+
+  </ion-content>
+  `,
+
+  // a modifier
+  styleUrls: ['./register.page.scss'],
+})
+
+// entity a modifier
+export class RegisterPage implements OnInit {
+  @ViewChild(IonModal) modal!: IonModal
+  private genService = inject(GenerateService);
+  private activatedRoute = inject(ActivatedRoute);
+  public folder!: string
+
+  // lien a modifier
+  linked="register"
+  formdata:any= {
+    idUser:0
+  };
+  updateFormData:any={}
+  items: any[]=[];
+
+  emp : any = [];
+
+
+
+  constructor(public menuCtrl : MenuController) {
+
+  }
+
+  ngOnInit() {
+    this.menuCtrl.enable(false);
+  }
+
+
+  create() {
+    console.log("++"+JSON.stringify(this.formdata))
+    this.genService.register(this.linked,this.formdata).subscribe(response => {
+      console.log('Réponse du serveur :', response);
+    });
+  }
+
+
+
+}

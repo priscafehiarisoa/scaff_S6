@@ -1,0 +1,108 @@
+import {Component, inject, OnInit, ViewChild} from '@angular/core';
+import {IonModal, MenuController, NavController} from "@ionic/angular";
+import { OverlayEventDetail } from '@ionic/core/components';
+import {ActivatedRoute} from "@angular/router";
+import {GenerateService} from "../../generate.service";
+
+@Component({
+  selector: 'app-login',
+  template:`
+
+  <ion-content [fullscreen]="true" class="ion-padding">
+<!--login page -->
+      <div class="" style="width: 30%; min-width: 468px ; margin:15% auto; " >
+        <div class="header">
+          <ion-title class="title ion-text-center" size="large" style="margin: 5%" >Login Page</ion-title>
+        </div>
+        <form #myForms="ngForm" (ngSubmit)="create()"  novalidate>
+          <div class="ion-padding">
+
+            <ion-item class="ion-margin" >
+              <ion-input type="text" label="Nom" name="userName" [(ngModel)]="formdata.userName"></ion-input>
+              <ion-icon name="person-outline"></ion-icon>
+
+            </ion-item>
+
+            <ion-item class="ion-margin" >
+              <ion-input type="password"   label="mot de passe"  name="password" [(ngModel)]="formdata.password"></ion-input>
+              <ion-icon name="lock-closed-outline"></ion-icon>
+            </ion-item>
+            <div style="padding-top: -26px;padding-bottom: 16px;" class="ion-margin" >
+              <ion-text *ngIf="this.error" class="errorInput" color="danger">username or password invalid </ion-text>
+              <ion-text *ngIf="this.tok" class="ion-color-success" color="danger">logged in </ion-text>
+            </div>
+
+              <ion-button style="" class="ion-margin " type="submit" >
+                <ion-icon name="chevron-forward"></ion-icon>
+              </ion-button>
+          </div>
+        </form>
+      </div>
+
+  </ion-content>
+  `,
+
+  // a modifier
+  styleUrls: ['./login.page.scss'],
+})
+
+// entity a modifier
+export class LoginPage implements OnInit {
+  @ViewChild(IonModal) modal!: IonModal
+  private genService = inject(GenerateService);
+  private activatedRoute = inject(ActivatedRoute);
+  public folder!: string
+  public token:Object | null={}
+  public tok:string = ""
+  public error : string=""
+
+
+
+  // lien a modifier
+  linked="login"
+  formdata:any= {
+  };
+  updateFormData:any={}
+  items: any[]=[];
+
+  emp : any = [];
+
+
+
+  constructor(public menuCtrl : MenuController,public navCtrl: NavController) {
+
+  }
+
+  ngOnInit() {
+    this.menuCtrl.enable(false);
+  }
+
+  onWillDismiss(event: Event) {
+    const ev = event as CustomEvent<OverlayEventDetail<string>>;
+
+  }
+
+  create() {
+
+    console.log("++"+JSON.stringify(this.formdata))
+    this.genService.login(this.linked,this.formdata).subscribe({next:response => {
+          console.log('Réponse du serveur :', (response));
+          this.token=response.body;
+          this.tok=JSON.stringify(this.token).replace("{\"token\":\"","").replace("\"}","" );
+          localStorage.setItem("token",this.tok)
+          console.log(response.status)
+          window.location.replace("/");
+        },
+        error:(error)=>{
+          this.error=error.error
+        }
+      }
+    );
+  }
+
+  cancel() {
+    this.modal.dismiss(null, 'cancel');
+  }
+
+
+}

@@ -1,0 +1,94 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Mvc;
+using System.Text;
+using com.district.test.entity;
+using com.district.test.repository;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
+
+
+namespace com.district.test.controller;
+
+[Route("/api/[controller]")]
+[ApiController]
+public class AuthController : Controller
+{
+    private static Users user = new Users();
+    private readonly IConfiguration _configuration;
+    private readonly RepositoryDbContext _context;
+
+
+
+    public AuthController(IConfiguration configuration,RepositoryDbContext context)
+    {
+        _configuration = configuration;
+        _context = context;
+    }
+
+    [HttpPost("register")]
+    public ActionResult<Users> Register([FromBody] Users request)
+    {
+        try
+        {
+            string passWordHash = BCrypt.Net.BCrypt.HashPassword(request.password);
+            request.password = passWordHash;
+            _context.Users.Add(request);
+            _context.SaveChanges();
+            return Ok(request);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+            return BadRequest(ex);
+        }
+
+    }
+
+    [HttpPost("login")]
+    public ActionResult Login(UserDto request)
+    {
+        user = null;
+       user = _context.Users.Where(e=>e.username==request.UserName).FirstOrDefault();
+        if (user==null)
+        {
+            return BadRequest("User not found");
+        }
+
+        if (!BCrypt.Net.BCrypt.Verify(request.Password, user.password))
+        {
+            var error = "Password incorrect";
+            return BadRequest(error);
+        }
+
+        string token = CreateToken(user);
+        return Ok(new {token});
+    }
+
+
+    private string CreateToken(Users user)
+    {
+        List<Claim> claims = new List<Claim>()
+        {
+            new Claim(ClaimTypes.Name, user.username),
+            new Claim(ClaimTypes.Role, user.role),
+        };
+
+        Console.WriteLine(_configuration.GetSection("AppSettings:Token").Value!);
+        var key = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value!)
+        );
+        Console.WriteLine(key);
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+        var token = new JwtSecurityToken(
+            claims: claims,
+            expires: DateTime.Now.AddDays(1),
+            signingCredentials: creds
+        );
+
+        var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+        Console.WriteLine(jwt);
+        return jwt;
+    }
+}

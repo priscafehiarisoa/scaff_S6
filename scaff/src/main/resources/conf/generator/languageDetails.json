@@ -22,6 +22,7 @@
                     "repository": "Template.code",
                     "pageList": "PagedList.code",
                     "pageparameters": "PageParameters.code",
+                    "authTemplate": "AuthTemplate.txt",
                     "isOneRepository":"true",
                     "imports": {
                         "controller":[
@@ -30,7 +31,9 @@
                             "Newtonsoft.Json",
                             "packageName",
                             "entity",
-                            "paginations"
+                            "paginations",
+                            "Microsoft.EntityFrameworkCore",
+                            "Microsoft.AspNetCore.Authorization"
                         ],
                         "entity":[
                             "System.ComponentModel.DataAnnotations",
@@ -59,7 +62,7 @@
                         }
                     },
                     "crudMethod" : {
-                        "findAll": "return Ok(_context.?.ToList());",
+                        "findAll": "return Ok(_context.?#inc#.ToList());",
                         "findById":"",
                         "delete": "\nvar #object# =_context.?.Find(id); \n_context.?.Remove(#object#);\n_context.SaveChanges();\n \t return Ok();",
                         "update": "var temp = #object#;\n_context.SaveChanges();\nreturn Ok();",
@@ -68,10 +71,10 @@
                     "controllerProperty" : {
                         "path": "Route(\"api/?\")",
                         "get": "HttpGet",
-                        "post": "HttpPost",
-                        "put": "HttpPut",
+                        "post": "HttpPost , Authorize(Roles = \"#auth#\")",
+                        "put": "HttpPut , Authorize(Roles = \"#auth#\")",
                         "pathSyntax":"[?]",
-                        "delete": "HttpDelete(\"{id}\")",
+                        "delete": "HttpDelete(\"{id}\") , Authorize(Roles = \"#auth#\")",
                         "classSyntax": "?Controller : Controller",
                         "returnType": "ActionResult<?>",
                         "field": "private readonly RepositoryDbContext _context;\n\tprivate readonly ILogger<?Controller> _logger;",
@@ -80,7 +83,7 @@
                         "annotationArgumentParameterFormData":"FromBody",
                         "annotationArgumentParameterLink":"",
                         "constructor": "\tpublic #name#Controller(RepositoryDbContext context) { _context = context; }",
-                        "paginationMethod": "[HttpGet(\"pagination\")]\n\tpublic ActionResult get?Pagination([FromQuery]PageParameters pageParameters)\n\t{\n\t\tvar item = PagedList<?>.ToPagedList(_context.?,\n\t\t\tpageParameters.PageNumber, pageParameters.PageSize);\n\t\tvar metadata = new\n\t\t{\n\t\t\titem.TotalCount,\n\t\t\titem.PageSize,\n\t\t\titem.CurrentPage,\n\t\t\titem.TotalPages,\n\t\t\titem.HasNext,\n\t\t\titem.HasPrevious\n\t\t};\n\t\tResponse.Headers.Add(\"X-Pagination\", JsonConvert.SerializeObject(metadata));\n\t\treturn Ok(item);\n\t}"
+                        "paginationMethod": "[HttpGet(\"pagination\")]\n\tpublic ActionResult get?Pagination([FromQuery]PageParameters pageParameters)\n\t{\n\t\tvar item = PagedList<?>.ToPagedList(_context.?#inc#,\n\t\t\tpageParameters.PageNumber, pageParameters.PageSize);\n\t\tvar metadata = new\n\t\t{\n\t\t\titem.TotalCount,\n\t\t\titem.PageSize,\n\t\t\titem.CurrentPage,\n\t\t\titem.TotalPages,\n\t\t\titem.HasNext,\n\t\t\titem.HasPrevious\n\t\t};\n\t\tResponse.Headers.Add(\"X-Pagination\", JsonConvert.SerializeObject(metadata));\n\t\treturn Ok(item);\n\t}"
                     },
                     "repositoryProperty" : {
                         "name":"DbContext",
