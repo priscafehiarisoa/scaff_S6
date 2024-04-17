@@ -82,9 +82,7 @@ public class DbConnection {
     }
 
     /**
-     * connect to the database by changing
-     * the connection property
-     * @author rakharrs
+
      * @return
      * @throws Exception
      */
