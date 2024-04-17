@@ -165,6 +165,7 @@ export class #entity#Page implements OnInit {
   // lien a modifier
   linked="#path#"
   formdata:any= {
+
   };
   updateFormData:any={}
   items: any[]=[];

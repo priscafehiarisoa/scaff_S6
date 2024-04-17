@@ -26,17 +26,17 @@ public class Test {
      */
 
     public static void main(String[] args) throws Exception {
-        String path = "/Users/priscafehiarisoadama/RiderProjects/WebApplication5/WebApplication5/";
+        String path = args[0];
 //        String path = "./";
         String framework = "csharp:dotnet";
-        String packageName = "com.district.test";
+        String packageName = args[1];
         String entity = "entity";
         String controller = "controller";
         String repository = "repository";
         String view = "viewTest";
         String viewType = "angular-ionic";
-        String viewPath="/Users/priscafehiarisoadama/IdeaProjects/learnIonicAngular/reciclica-app";
-        String url = "http://localhost:8080/";
+        String viewPath=args[3];
+        String url = args[4];
         System.out.println(args[8]);
 
         String role=args[8];

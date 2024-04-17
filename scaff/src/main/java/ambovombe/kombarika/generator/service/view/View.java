@@ -52,13 +52,18 @@ public class View {
             if (!primaryKeys.contains(set.getKey())) {
                 String temp = foreignKeys.get(set.getKey());
                 if(temp != null){
-                    String option = this.getViewProperties().getOption()
-                            .replace("#url#", url)
-                            .replace("#path#", ObjectUtility.formatToCamelCase(temp))
-                            .replace("#id#", ObjectUtility.formatToCamelCase(id))
-                            .replace("#name#", ObjectUtility.formatToCamelCase(set.getKey()))
-                            .replace("#attribute#", ObjectUtility.formatToCamelCase(attributes[i]));
-                    i++;
+                    String option="";
+                    try {
+                         option = this.getViewProperties().getOption()
+                                .replace("#url#", url)
+                                .replace("#path#", ObjectUtility.formatToCamelCase(temp))
+                                .replace("#id#", ObjectUtility.formatToCamelCase(id))
+                                .replace("#name#", ObjectUtility.formatToCamelCase(set.getKey()))
+                                .replace("#attribute#", ObjectUtility.formatToCamelCase(attributes[i]));
+                        i++;
+                    }catch (Exception e){
+
+                    }
                     option = Misc.tabulate(Misc.tabulate(option));
                     res += this.getViewProperties().getSelect()
                             .replace("#name#", ObjectUtility.formatToCamelCase(temp))
@@ -87,15 +92,20 @@ public class View {
                     .replace("#name#", ObjectUtility.formatToCamelCase(temp))
                     .replace("#id#", ObjectUtility.formatToCamelCase(id))
                     .replace("#Name#", ObjectUtility.capitalize(ObjectUtility.formatToCamelCase(temp)));
-                    String option = this.getViewProperties().getOption()
-                            .replace("#url#", url)
-                            .replace("#path#", ObjectUtility.formatToCamelCase(temp))
-                            .replace("#label#", temp)
-                            .replace("#id#", ObjectUtility.formatToCamelCase(id))
-                            .replace("#attribute#", ObjectUtility.formatToCamelCase(attributes[i]))
-                            .replace("#name#", ObjectUtility.formatToCamelCase(set.getKey())) + "\n";
+                    String option ="";
+                    try {
+                        option = this.getViewProperties().getOption()
+                                .replace("#url#", url)
+                                .replace("#path#", ObjectUtility.formatToCamelCase(temp))
+                                .replace("#label#", temp)
+                                .replace("#id#", ObjectUtility.formatToCamelCase(id))
+                                .replace("#attribute#", ObjectUtility.formatToCamelCase(attributes[i]))
+                                .replace("#name#", ObjectUtility.formatToCamelCase(set.getKey())) + "\n";
 
-                    i++;
+                        i++;
+                    }catch (Exception e){
+
+                    }
                     res=res.replace("#optionUpdate#",option).replace("#label#", ObjectUtility.formatToCamelCase(temp));
                     continue;
                 }
@@ -138,10 +148,14 @@ public class View {
         System.out.println(attribute);
         for (Map.Entry<String, String> set : columns.entrySet()) {
             if(foreignKeys.get(set.getKey()) != null){
-                res += "\t\t" + template
-                .replace("#values#", ObjectUtility.formatToCamelCase(foreignKeys.get(set.getKey())) + "." + ObjectUtility.formatToCamelCase(attributes[i])) + "\n";
-                System.out.println(res);
-                i++;
+                try {
+                    res += "\t\t" + template
+                            .replace("#values#", ObjectUtility.formatToCamelCase(foreignKeys.get(set.getKey())) + "." + ObjectUtility.formatToCamelCase(attributes[i])) + "\n";
+                    System.out.println(res);
+                    i++;
+                }catch (Exception e){
+
+                }
             }else{
                 if(set.getKey().contains("password")){
                     continue;
