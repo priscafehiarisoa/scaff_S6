@@ -179,7 +179,7 @@ public class Entity {
 //            String value = entry.getValue();
 //            System.out.println("Key: " + key + ", Value: " + value);
 //        }
-        System.out.println(Controller.inputs_dotnet("semestrematiere", codeGenerator.getDbConnection()));
+//        System.out.println(Controller.inputs_dotnet("semestrematiere", codeGenerator.getDbConnection()));
     }
 
 }

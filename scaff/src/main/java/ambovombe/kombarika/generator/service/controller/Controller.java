@@ -1,9 +1,12 @@
 package ambovombe.kombarika.generator.service.controller;
 
+import ambovombe.kombarika.Test;
 import ambovombe.kombarika.configuration.mapping.LanguageProperties;
 import ambovombe.kombarika.configuration.mapping.*;
 import ambovombe.kombarika.database.DbConnection;
 import ambovombe.kombarika.generator.CodeGenerator;
+import ambovombe.kombarika.generator.parser.FileUtility;
+import ambovombe.kombarika.generator.parser.JsonUtility;
 import ambovombe.kombarika.generator.service.DbService;
 import ambovombe.kombarika.generator.service.GeneratorService;
 import ambovombe.kombarika.generator.utils.ObjectUtility;
@@ -11,11 +14,10 @@ import ambovombe.kombarika.utils.Misc;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Getter @Setter
@@ -25,6 +27,7 @@ public class Controller{
     ControllerProperty controllerProperty;
     AnnotationProperty annotationProperty;
     Imports imports;
+    String [] tables;
 
     /**
      * Generate the function that make the insert to the database
@@ -34,16 +37,19 @@ public class Controller{
      * @param controllerProperty
      * @return the string form of the function
      */
-    public String save(String table){
+    public String save(String table) throws Exception {
+        CodeGenerator codeGenerator=new CodeGenerator();
         String body = "";
         String args = "";
         args += this.getLanguageProperties().getAnnotationSyntax().replace("?", this.getControllerProperty().getAnnotationArgumentParameterFormData()) + " "
                 + ObjectUtility.capitalize(ObjectUtility.formatToCamelCase(table)) + " "
                 + ObjectUtility.formatToCamelCase(table);
 
+        String foreignKeysetup=setupForeignKey(table,codeGenerator.getDbConnection());
         body += Misc.tabulate(this.getCrudMethod().getSave()
             .replace("#object#", ObjectUtility.formatToCamelCase(table))
-            .replace("?", ObjectUtility.capitalize(ObjectUtility.formatToCamelCase(table))));
+                .replace("#fk#",foreignKeysetup )
+                .replace("?", ObjectUtility.capitalize(ObjectUtility.formatToCamelCase(table))));
         String function =  this.getLanguageProperties().getMethodSyntax()
                 .replace("#name#", "save")
                 .replace("#type#", this.getControllerProperty().getReturnType().replace("?", ObjectUtility.capitalize(ObjectUtility.formatToCamelCase(table))))
@@ -134,6 +140,28 @@ public class Controller{
         System.out.println("=func="+function);
         return Misc.tabulate(this.getLanguageProperties().getAnnotationSyntax().replace("?", this.getControllerProperty().getDelete()) + "\n" + function);
     }
+//    public static List<String> getTableName() throws Exception {
+//        List<String> tableName= new ArrayList<>();
+//        CodeGenerator codeGenerator=new CodeGenerator();
+//        try (Connection connection = codeGenerator.getDbConnection().connection) {
+//            DatabaseMetaData metaData = connection.getMetaData();
+//            ResultSet tables = metaData.getTables(null, null, "%", new String[]{"TABLE"});
+//            while (tables.next()) {
+//                String tablenom = tables.getString("TABLE_NAME");
+//                tableName.add(tablenom);
+//            }
+//
+//        }
+//        return tableName;
+//
+//    }
+
+    public static void main(String[] args) throws Exception {
+//        Controller.getTableName().forEach(System.out::println);
+        DbConnection.database= Test.setupDatabase(DbConnection.database,"priscafehiarisoadama","","district");
+        CodeGenerator codeGenerator=new CodeGenerator();
+        System.out.println(setupForeignKey("fokontany",codeGenerator.getDbConnection()));
+    }
 
     public static String inputs_dotnet (String table, DbConnection dbConnection) throws Exception {
         HashMap<String, String> foreignKeys = DbService.getForeignKeys(dbConnection, table);
@@ -145,6 +173,33 @@ public class Controller{
 
         }
         return response;
+    }
+
+    public static String setupForeignKey(String table, DbConnection dbConnection) throws Exception{
+        HashMap<String, String> foreignKeys = DbService.getForeignKeys(dbConnection, table);
+        HashMap<String, String> columns=DbService.getColumnNameAndType(dbConnection.getConnection(), table);;
+        String response="";
+        String primaryKey="";
+        try {
+            primaryKey=DbService.getPrimaryKey(dbConnection, table).get(0);
+        }
+        catch (Exception e)
+        {}
+        String temp="\n \t#camel# #lower# = _context.#camel#.Where(f=>f.#id# == #table#.#lower#.#id#).FirstOrDefault(); \n \t#table#.#lower# = #lower#;";
+        DbService.getPrimaryKey(dbConnection, table).forEach(System.out::println);
+
+        for (Map.Entry<String, String> set : columns.entrySet()) {
+            String tempFk = foreignKeys.get(set.getKey());
+            String column=set.getKey();
+            System.out.println("temp fk : "+tempFk);
+            System.out.println("column fk : "+set);
+            if(tempFk != null) {
+                String camelCase= ObjectUtility.capitalize(tempFk);
+                response+=temp.replace("#camel#",camelCase).replace("#lower#",tempFk).replace("#table#",table).replace("#id#",primaryKey).replace("#idfk#",primaryKey);
+            }
+
+        }
+            return response;
     }
     public String findAllPagination(String table) throws Exception {
         CodeGenerator codeGenerator=new CodeGenerator();

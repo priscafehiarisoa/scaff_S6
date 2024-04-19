@@ -66,7 +66,7 @@
                         "findById":"",
                         "delete": "\nvar #object# =_context.?.Find(id); \n_context.?.Remove(#object#);\n_context.SaveChanges();\n \t return Ok();",
                         "update": "var temp = #object#;\n_context.SaveChanges();\nreturn Ok();",
-                        "save": "_context.?.Add(#object#);\n_context.SaveChanges();\nreturn Ok();"
+                        "save": "try\n\t\t{\n\t\t\tusing (_context)\n\t\t\t{#fk#_context.?.Add(#object#);\n_context.SaveChanges();\nreturn Ok();\t}\n\t\t\t\n\t\t}\n\t\tcatch (Exception e)\n\t\t{\n\t\t\treturn BadRequest(e.Message);\n\t\t}"
                     },
                     "controllerProperty" : {
                         "path": "Route(\"api/?\")",

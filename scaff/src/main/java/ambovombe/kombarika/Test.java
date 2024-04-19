@@ -8,6 +8,7 @@ import ambovombe.kombarika.database.DbConnection;
 import ambovombe.kombarika.generator.CodeGenerator;
 import ambovombe.kombarika.generator.IonicProjectCreator;
 import ambovombe.kombarika.generator.service.DbService;
+import ambovombe.kombarika.generator.service.controller.Controller;
 import ambovombe.kombarika.utils.Misc;
 
 import java.io.BufferedWriter;
@@ -45,6 +46,8 @@ public class Test {
 
 //        String confDatabaseJson=IonicProjectCreator.readFileToString(confFile);
         DbConnection.database=Test.setupDatabase(DbConnection.database,args[5],args[6],args[7]);
+//        Controller.getTableName().forEach(System.out::println);
+
 //        code jeddy
 //        IonicProjectCreator.clearFileContent(confFile);
 //        IonicProjectCreator.writeToFile(confFile,confDatabaseJson);
@@ -54,6 +57,9 @@ public class Test {
         try{
 
             String[] tables = DbService.getAllTablesArrays(codeGenerator.getDbConnection());
+            for (int i = 0; i < tables.length; i++) {
+                System.out.println(tables[i]);
+            }
             codeGenerator.generateAll(path,viewPath, packageName, entity, controller, repository, view, viewType, url, tables, framework,role);
 
           }catch(Exception e){

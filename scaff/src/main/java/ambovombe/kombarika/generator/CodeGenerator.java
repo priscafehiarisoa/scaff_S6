@@ -35,6 +35,7 @@ public class CodeGenerator {
     TypeProperties typeProperties;
     ViewDetails viewDetails;
     FrameworkProperties frameworkProperties;
+    String [] tables;
 
     public CodeGenerator() throws Exception {
         this.dbConnection = new DbConnection();
@@ -68,11 +69,12 @@ public class CodeGenerator {
         String entity,
         String lang,
         String pagination,
-        String role
+        String role,
+        String [] tables
     ) throws Exception{
         String[] splittedLang = lang.split(":");
         String language = splittedLang[0]; String framework = splittedLang[1];
-        String controller = buildController(table, packageName, repository, entity, language, framework,pagination,role);
+        String controller = buildController(table, packageName, repository, entity, language, framework,pagination,role,tables);
         generateControllerFile(path, table, packageName, language, framework, controller);
     }
 
@@ -223,7 +225,7 @@ public class CodeGenerator {
         FileUtility.generateFile(path, GeneratorService.getFileName(table, languageProperties.getExtension()), entity);
     }
 
-    public String buildController(String table, String packageName, String repository, String entity, String language, String framework,String paginations,String role) throws Exception{
+    public String buildController(String table, String packageName, String repository, String entity, String language, String framework,String paginations,String role,String [] tables) throws Exception{
         LanguageProperties languageProperties = getLanguageDetails().getLanguages().get(language);
         FrameworkProperties frameworkProperties = languageProperties.getFrameworks().get(framework);
         String template = frameworkProperties.getTemplate();
@@ -312,7 +314,7 @@ public class CodeGenerator {
         String role
     )  throws Exception{
         for (String table : tables) {
-            generateController(path, table, packageName + "." + controller, packageName + "." + repository, packageName + "." + "entity", framework,packageName+".paginations",role);
+            generateController(path, table, packageName + "." + controller, packageName + "." + repository, packageName + "." + "entity", framework,packageName+".paginations",role,tables);
         }
     }
 

@@ -45,7 +45,7 @@ import {GenerateService} from "../generate.service";
 <!--              end inputs -->
                  <ion-item>
               <ion-buttons slot="end">
-                <ion-button   color="primary" [strong]="true">Confirm</ion-button>
+                <ion-button type="submit"  color="primary" [strong]="true">Confirm</ion-button>
               </ion-buttons>
             </ion-item>
           </form>
@@ -165,7 +165,7 @@ export class #entity#Page implements OnInit {
   // lien a modifier
   linked="#path#"
   formdata:any= {
-
+ #id#:0
   };
   updateFormData:any={}
   items: any[]=[];
@@ -206,7 +206,12 @@ export class #entity#Page implements OnInit {
       this.loadItems(this.folder);
       console.log('Réponse du serveur :', response);
     },error => {
+    if(error.statuts==403){
              this.error_auth="vous n'êtes pas authorisé à utiliser ce service"
+             }
+             else {
+                this.error_auth="une erreur est survenue"
+             }
            });
   }
 
